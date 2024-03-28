@@ -1,4 +1,5 @@
-import { Routes } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './components/pagine/home/home';
 import { DettaglioComponent } from './components/pagine/aggiuntaRisultati/dettaglio/dettaglio';
 import { ListoneComponent } from './components/pagine/aggiuntaRisultati/listone/listone';
@@ -27,3 +28,8 @@ import { Punteggi } from './components/pagine/riepilogoLega/punteggi/punteggi';
   // altre rotte...
 ];
 
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
