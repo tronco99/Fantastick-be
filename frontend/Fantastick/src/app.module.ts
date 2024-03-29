@@ -7,6 +7,9 @@ import { AggiuntaRisultatiModule } from './app/components/pagine/aggiuntaRisulta
 import { HomeModule } from './app/components/pagine/home/home.module';
 import { NuovaLegaModule } from './app/components/pagine/nuovaLega/nuovaLega.module';
 import { RiepilogoLegaModule } from './app/components/pagine/riepilogoLega/riepilogoLega.module';
+import { HttpClientModule } from '@angular/common/http';
+import { DataService } from './app/service/DataService';
+
 
 @NgModule({
   declarations: [
@@ -14,6 +17,7 @@ import { RiepilogoLegaModule } from './app/components/pagine/riepilogoLega/riepi
     ButtonNavigazioni //todo da rimuovere
   ],
   imports: [
+    HttpClientModule,
     BrowserModule,
     AppRoutingModule,
     AggiuntaRisultatiModule,
@@ -21,7 +25,7 @@ import { RiepilogoLegaModule } from './app/components/pagine/riepilogoLega/riepi
     NuovaLegaModule,
     RiepilogoLegaModule,
   ], 
-  providers: [],
+  providers: [DataService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
