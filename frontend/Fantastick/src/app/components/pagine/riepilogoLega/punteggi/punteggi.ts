@@ -2,11 +2,10 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'punteggi',
-  standalone: true,
   templateUrl: './punteggi.html',
   styleUrls: ['./punteggi.css']
 })
-export class Punteggi {
+export class PunteggiComponent {
   title = 'Punteggi!';
 
   constructor() { }

@@ -1,7 +1,9 @@
-import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
-import { HomeComponent } from './app/components/pagine/home/home';
-import { ElencoLegheComponent } from './app/components/pagine/elencoLeghe/elencoLeghe';
+import { enableProdMode } from '@angular/core';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { AppModule } from './app.module'; 
 
-bootstrapApplication(HomeComponent, appConfig)
-  .catch((err) => console.error(err));
+enableProdMode();
+
+// Avvia l'applicazione Angular sulla piattaforma del browser
+platformBrowserDynamic().bootstrapModule(AppModule)
+  .catch(err => console.error(err));
