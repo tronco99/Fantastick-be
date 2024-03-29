@@ -1,30 +1,30 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './components/pagine/home/home';
+import { IscrizioneComponent } from './components/pagine/home/iscrizione/iscrizione';
 import { DettaglioComponent } from './components/pagine/aggiuntaRisultati/dettaglio/dettaglio';
 import { ListoneComponent } from './components/pagine/aggiuntaRisultati/listone/listone';
-import { ElencoLegheComponent } from './components/pagine/elencoLeghe/elencoLeghe';
-import { InserimentoDati } from './components/pagine/nuovaLega/inserimentoDati/inserimentoDati';
-import { Regolamento } from './components/pagine/nuovaLega/regolamento/regolamento';
-import { Scelte } from './components/pagine/nuovaLega/scelte/scelte';
-import { Calendario } from './components/pagine/riepilogoLega/calendario/calendario';
-import { Classifica } from './components/pagine/riepilogoLega/classifica/classifica';
-import { Profilo } from './components/pagine/riepilogoLega/profilo/profilo';
-import { Punteggi } from './components/pagine/riepilogoLega/punteggi/punteggi';
+import { ElencoLegheComponent } from './components/pagine/home/elencoLeghe/elencoLeghe';
+import { InserimentoDatiComponent } from './components/pagine/nuovaLega/inserimentoDati/inserimentoDati';
+import { RegolamentoComponent } from './components/pagine/nuovaLega/regolamento/regolamento';
+import { ScelteComponent } from './components/pagine/nuovaLega/scelte/scelte';
+import { CalendarioComponent } from './components/pagine/riepilogoLega/calendario/calendario';
+import { ClassificaComponent } from './components/pagine/riepilogoLega/classifica/classifica';
+import { ProfiloComponent } from './components/pagine/riepilogoLega/profilo/profilo';
+import { PunteggiComponent } from './components/pagine/riepilogoLega/punteggi/punteggi';
 
  export const routes: Routes = [
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'home', component: HomeComponent },
+  { path: '', redirectTo: '/iscrizione', pathMatch: 'full' },
+  { path: 'iscrizione', component: IscrizioneComponent },
   { path: 'dettaglio', component: DettaglioComponent },
   { path: 'listone', component: ListoneComponent },
   { path: 'elencoLeghe', component: ElencoLegheComponent },
-  { path: 'inserimentoDati', component: InserimentoDati },
-  { path: 'regolamento', component: Regolamento },
-  { path: 'scelte', component: Scelte },
-  { path: 'calendario', component: Calendario },
-  { path: 'classifica', component: Classifica },
-  { path: 'profilo', component: Profilo },
-  { path: 'punteggi', component: Punteggi },
+  { path: 'inserimentoDati', component: InserimentoDatiComponent },
+  { path: 'regolamento', component: RegolamentoComponent },
+  { path: 'scelte', component: ScelteComponent },
+  { path: 'calendario', component: CalendarioComponent },
+  { path: 'classifica', component: ClassificaComponent },
+  { path: 'profilo', component: ProfiloComponent },
+  { path: 'punteggi', component: PunteggiComponent },
   // altre rotte...
 ];
 

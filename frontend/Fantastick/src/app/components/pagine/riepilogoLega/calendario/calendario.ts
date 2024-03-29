@@ -2,11 +2,10 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'calendario',
-  standalone: true,
   templateUrl: './calendario.html',
   styleUrls: ['./calendario.css']
 })
-export class Calendario {
+export class CalendarioComponent {
   title = 'Calendario!';
 
   constructor() { }
