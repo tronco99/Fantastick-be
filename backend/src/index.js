@@ -13,10 +13,6 @@ app.get('/', async (req, res) => {
   res.json(oggettoDato);
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
-
 app.use(bodyParser.json());
 
 app.get('/ciao/:nome', async (req, res) => {
@@ -46,5 +42,8 @@ async function recuperaUnDato() {
 async function run() {
 }
 
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
 
 run().catch(console.dir);
