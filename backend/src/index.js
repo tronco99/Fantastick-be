@@ -8,6 +8,11 @@ const port = 3000;
 const dbConfig = require('./config/database');
 app.use(cors()); 
 
+app.get('/', async (req, res) => {
+  const oggettoDato = await recuperaUnDato();
+  res.json(oggettoDato);
+});
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
@@ -15,11 +20,6 @@ app.listen(port, () => {
 app.use(bodyParser.json());
 
 app.get('/ciao/:nome', async (req, res) => {
-  const oggettoDato = await recuperaUnDato();
-  res.json(oggettoDato);
-});
-
-app.get('/', async (req, res) => {
   const oggettoDato = await recuperaUnDato();
   res.json(oggettoDato);
 });
