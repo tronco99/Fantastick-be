@@ -19,8 +19,9 @@ app.get('/ciao/:nome', async (req, res) => {
   res.json(oggettoDato);
 });
 
-app.get('/', (req, res) => {
-  res.send('Ciao vec');
+app.get('/', async (req, res) => {
+  const oggettoDato = await recuperaUnDato();
+  res.json(oggettoDato);
 });
 
 async function recuperaUnDato() {
