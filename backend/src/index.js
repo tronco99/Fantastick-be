@@ -19,6 +19,9 @@ app.get('/ciao/:nome', async (req, res) => {
   res.json(oggettoDato);
 });
 
+app.get('/', (req, res) => {
+  res.send('Ciao vec');
+});
 
 async function recuperaUnDato() {
   try {
