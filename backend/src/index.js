@@ -4,7 +4,7 @@ const cors = require('cors');
 const Bonus = require('./models/BonusModel'); 
 
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 80; 
 const dbConfig = require('./config/database');
 app.use(cors()); 
 
@@ -42,8 +42,8 @@ async function recuperaUnDato() {
 async function run() {
 }
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
 
 run().catch(console.dir);
