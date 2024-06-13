@@ -11,9 +11,8 @@ export class DataService {
   constructor(private http: HttpClient) { }
 
   getDato(nome: string): Observable<any> {
-    return this.http.get<any>(`https://fantastick-be.vercel.app/`).pipe(
+    return this.http.get<any>(`https://fantastick.adaptable.app/`).pipe(
       tap((data: any) => {
-        console.log('Ricevuto qualcosa:');
       })
     );
   }
