@@ -15,7 +15,7 @@ export class IscrizioneComponent implements OnInit {
     this.fetchData();
   }
   fetchData(): void {
-    this.dataService.getDato('MARCO').subscribe({
+    /*this.dataService.getBonus('MARCO').subscribe({
       next: (response: string) => {
         this.dato = response;
         console.log('Dato ottenuto:', this.dato);
@@ -23,6 +23,6 @@ export class IscrizioneComponent implements OnInit {
       error: (error) => {
         console.error('Errore durante il recupero del dato:', error);
       }
-    });
+    });*/
   }
 }

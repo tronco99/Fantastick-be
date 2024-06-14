@@ -9,12 +9,13 @@ import { NuovaLegaModule } from './app/components/pagine/nuovaLega/nuovaLega.mod
 import { RiepilogoLegaModule } from './app/components/pagine/riepilogoLega/riepilogoLega.module';
 import { HttpClientModule } from '@angular/common/http';
 import { DataService } from './app/service/DataService';
+import { IscrizioneComponent } from './app/components/pagine/home/iscrizione/iscrizione';
 
 
 @NgModule({
   declarations: [
-    AppComponent,
-    ButtonNavigazioni //todo da rimuovere
+    AppComponent
+    //,ButtonNavigazioni //todo da rimuovere
   ],
   imports: [
     HttpClientModule,
@@ -25,7 +26,7 @@ import { DataService } from './app/service/DataService';
     NuovaLegaModule,
     RiepilogoLegaModule,
   ], 
-  providers: [DataService ],
+  providers: [DataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

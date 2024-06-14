@@ -13,7 +13,7 @@ import { ProfiloComponent } from './components/pagine/riepilogoLega/profilo/prof
 import { PunteggiComponent } from './components/pagine/riepilogoLega/punteggi/punteggi';
 
  export const routes: Routes = [
-  { path: '', redirectTo: '/iscrizione', pathMatch: 'full' },
+  { path: '', redirectTo: '/elencoLeghe', pathMatch: 'full' },
   { path: 'iscrizione', component: IscrizioneComponent },
   { path: 'dettaglio', component: DettaglioComponent },
   { path: 'listone', component: ListoneComponent },
