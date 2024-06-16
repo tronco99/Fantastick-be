@@ -1,44 +1,17 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const Bonus = require('./models/BonusModel'); 
-
 const app = express();
 const PORT = process.env.PORT || 80; 
-const dbConfig = require('./config/database');
+
 app.use(cors()); 
-
-app.get('/', async (req, res) => {
-  const oggettoDato = await recuperaUnDato();
-  res.json(oggettoDato);
-});
-
 app.use(bodyParser.json());
-
-app.get('/ciao/:nome', async (req, res) => {
-  const oggettoDato = await recuperaUnDato();
-  res.json(oggettoDato);
-});
-
-async function recuperaUnDato() {
-  try {
-    await dbConfig.connect();
-    const db = dbConfig.db('COCACOLASTICK');
-    try {
-
-       result = await db.collection('BONUS').findOne({});
-      console.log('ricevuta richiesta, ritorno qualcosa');
-      console.log(result)
-      return result
-
-    } catch (err) {
-      console.error('Errore nel recupero del documento:', err);
-    }
-  } finally {
-    await dbConfig.close();
-  }
-}
-
+app.use('/api/bonus', require('./routes/BonusRoutes'));
+app.use('/api/categorie', require('./routes/CategorieRoutes'));
+app.use('/api/giocatore', require('./routes/GiocatoreRoutes'));
+app.use('/api/lega', require('./routes/LegaRoutes'));
+app.use('/api/squadra', require('./routes/SquadraRoutes'));
+app.use('/api/user', require('./routes/UserRoutes'));
 async function run() {
 }
 
