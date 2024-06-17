@@ -44,6 +44,24 @@ class LegaService {
       await databaseConfig.chiudiConnessione();
     }
   }
+
+  async getLegheNonRegistratoVisib(id, visibilita) {
+    try {
+      const database = await databaseConfig.collegaAllaCollezione(NOME_COLLEZIONE)
+      const query = {
+        CVISIBILITA: { $in: visibilita },
+        LIDUSER: { $ne: id }
+      };      
+      return await database.find(query).toArray();
+    } catch (err) {
+      console.error('Errore nel recupero del documento:', err);
+    }
+    finally
+    {
+      await databaseConfig.chiudiConnessione();
+    }
+  }
+  
 }
 
 module.exports = LegaService;

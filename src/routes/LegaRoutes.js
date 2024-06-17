@@ -1,6 +1,6 @@
 const express = require('express');
-const router = express.Router();
 const LegaService = require('../services/LegaService');
+const router = express.Router();
 
 const legaService = new LegaService();
 
@@ -30,6 +30,17 @@ router.post('/perUtente', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+router.post('/nonRegisVisib', async (req, res) => {
+  try {
+    const { idUtente, visibilita } = req.body;
+    const leghe = await legaService.getLegheNonRegistratoVisib(idUtente, visibilita);
+    res.json(leghe);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 
 
 module.exports = router;
