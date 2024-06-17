@@ -8,9 +8,8 @@ const databaseConfig = new DatabaseConfig();
 class LegaService {
   async getAll() {
     try {
-      const database = await databaseConfig.collegaAlDB()
-      const result = await database.collection(NOME_COLLEZIONE).find({}).toArray();
-      return result
+      const database = await databaseConfig.collegaAllaCollezione(NOME_COLLEZIONE)
+      return await database.find({}).toArray();
     } catch (err) {
       console.error('Errore nel recupero del documento:', err);
     }
@@ -22,9 +21,8 @@ class LegaService {
 
   async getById(id) {
     try {
-      const database = await databaseConfig.collegaAlDB()
-      const result = await database.collection(NOME_COLLEZIONE).findOne({ _id: new ObjectId(id) });
-      return result
+      const database = await databaseConfig.collegaAllaCollezione(NOME_COLLEZIONE)
+      return await database.findOne({ _id: id });
     } catch (err) {
       console.error('Errore nel recupero del documento:', err);
     }
@@ -36,9 +34,8 @@ class LegaService {
 
   async getLeghePerUtente(id) {
     try {
-      const database = await databaseConfig.collegaAlDB()
-      const result = await database.collection(NOME_COLLEZIONE).find({ LIDUSER: id });
-      return result
+      const database = await databaseConfig.collegaAllaCollezione(NOME_COLLEZIONE)
+      return await database.find({ LIDUSER: id }).toArray();
     } catch (err) {
       console.error('Errore nel recupero del documento:', err);
     }

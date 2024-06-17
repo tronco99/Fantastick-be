@@ -24,9 +24,7 @@ router.get('/:id', async (req, res) => {
 
 router.post('/perUtente', async (req, res) => {
   try {
-    const userId = req.body.idUtente;
-    console.log(req.body.idUtente)
-    const leghe = await legaService.getLeghePerUtente(userId);
+    const leghe = await legaService.getLeghePerUtente(req.body.idUtente);
     res.json(leghe);
   } catch (err) {
     res.status(500).json({ message: err.message });

@@ -22,6 +22,17 @@ class DatabaseConfig {
       }
   }
 
+  async collegaAllaCollezione(NOME_COLLEZIONE) {
+    await client.connect();
+    console.log('Apro la connessione')
+    try {
+      const db = client.db('COCACOLASTICK');
+      return await db.collection(NOME_COLLEZIONE)
+    } catch (err) {
+      console.error('Errore in fase di connessione al db:', err);
+    }
+}
+
   async chiudiConnessione() {
     try {
       console.log('chiudo la connessione')
