@@ -41,6 +41,14 @@ router.post('/nonRegisVisib', async (req, res) => {
   }
 });
 
-
+router.post('/iscriviUserALega', async (req, res) => {
+  try {
+    const { idUtente, idLega } = req.body;
+    const leghe = await legaService.aggiungiUtenteALega(idUtente, idLega);
+    res.json(leghe);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 module.exports = router;

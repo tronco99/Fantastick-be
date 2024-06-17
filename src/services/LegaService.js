@@ -62,6 +62,22 @@ class LegaService {
     }
   }
   
+  async aggiungiUtenteALega(id, listaUser) {
+    const database = await databaseConfig.collegaAllaCollezione(NOME_COLLEZIONE)
+    
+    try {
+      const result = await database.updateOne(
+          { _id: id },
+          { $push: { LIDUSER: listaUser } }
+      );
+      res.status(200).send({ message: 'Aggiornamento riuscito', result });
+    } catch (err) {
+        res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
+    }
+    finally
+    {
+      await databaseConfig.chiudiConnessione();
+    }
+  }
 }
-
 module.exports = LegaService;
