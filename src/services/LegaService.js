@@ -33,6 +33,20 @@ class LegaService {
       await databaseConfig.chiudiConnessione();
     }
   }
+
+  async getLeghePerUtente(id) {
+    try {
+      const database = await databaseConfig.collegaAlDB()
+      const result = await database.collection(NOME_COLLEZIONE).find({ LIDUSER: id });
+      return result
+    } catch (err) {
+      console.error('Errore nel recupero del documento:', err);
+    }
+    finally
+    {
+      await databaseConfig.chiudiConnessione();
+    }
+  }
 }
 
 module.exports = LegaService;

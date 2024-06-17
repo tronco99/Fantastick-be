@@ -22,5 +22,15 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+router.post('/perUtente', async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    const leghe = await LegaService.getLeghePerUtente(userId);
+    res.json(leghe);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 
 module.exports = router;
