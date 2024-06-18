@@ -1,4 +1,4 @@
-const DatabaseConfig = require('../config/DatabaseConfig');
+const DatabaseConfig = require('../utils/DatabaseConfig');
 const { ObjectId } = require('mongodb');
 
 const NOME_COLLEZIONE = 'SQUADRA'

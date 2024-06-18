@@ -1,4 +1,4 @@
-const DatabaseConfig = require('../config/DatabaseConfig');
+const DatabaseConfig = require('../utils/DatabaseConfig');
 const { ObjectId } = require('mongodb');
 
 const NOME_COLLEZIONE = 'LEGA'
@@ -50,8 +50,22 @@ class LegaService {
     try {
       const database = await databaseConfig.collegaAllaCollezione(NOME_COLLEZIONE)
       const query = {
-        CVISIBILITA: { $in: visibilita },
-        LIDUSER: { $ne: id }
+        CVISIBILITA: {
+          $in: [
+            "PUBBLICA"
+          ]
+        },
+        LIDUSER: {
+          $ne: "65ef433e8d5e31e1ec15956f"
+        },
+        $expr: {
+          $lt: [
+            {
+              $size: "$LIDUSER"
+            },
+            "$NMAXUSER"
+          ]
+        }
       };      
       return await database.find(query).toArray();
     } catch (err) {
@@ -63,15 +77,29 @@ class LegaService {
     }
   }
   
-  async aggiungiUtenteALega(id, idUtente, res) {
+  async aggiungiUtenteALega(idLega, idUtente, res) {
     const database = await databaseConfig.collegaAllaCollezione(NOME_COLLEZIONE)
     try {
-      const objectId = ObjectId.createFromHexString(id);
+      const objectId = ObjectId.createFromHexString(idLega);
       const result = await database.updateOne(
-          { _id: objectId },
-          { $push: { LIDUSER: idUtente } }
+        {
+          _id: objectId,
+          $expr: {
+            $lt: [
+              {
+                $size: "$LIDUSER"
+              },
+              "$NMAXUSER"
+            ]
+          }
+        },
+        {
+          $push: {
+            LIDUSER: idUtente
+          }
+        }
       );
-      res.status(200).send({ message: 'Aggiornamento riuscito', result });
+      res.status(200).send({ message: 'Aggiornate ' + result.modifiedCount + ' righe', result });
     } catch (err) {
       res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
     }
