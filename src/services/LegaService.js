@@ -22,7 +22,8 @@ class LegaService {
   async getById(id) {
     try {
       const database = await databaseConfig.collegaAllaCollezione(NOME_COLLEZIONE)
-      return await database.findOne({ _id: id });
+      const objectId = ObjectId.createFromHexString(id);
+      return await database.find({ _id: objectId }).toArray();
     } catch (err) {
       console.error('Errore nel recupero del documento:', err);
     }
@@ -64,10 +65,10 @@ class LegaService {
   
   async aggiungiUtenteALega(id, listaAggiornata) {
     const database = await databaseConfig.collegaAllaCollezione(NOME_COLLEZIONE)
-    
     try {
+      const objectId = ObjectId.createFromHexString(id);
       const result = await database.updateOne(
-          { _id: id },
+          { _id: objectId },
           { $push: { LIDUSER: listaAggiornata } }
       );
       res.status(200).send({ message: 'Aggiornamento riuscito', result });
