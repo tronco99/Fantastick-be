@@ -51,12 +51,10 @@ class LegaService {
       const database = await databaseConfig.collegaAllaCollezione(NOME_COLLEZIONE)
       const query = {
         CVISIBILITA: {
-          $in: [
-            "PUBBLICA"
-          ]
+          $in: visibilita
         },
         LIDUSER: {
-          $ne: "65ef433e8d5e31e1ec15956f"
+          $ne: id
         },
         $expr: {
           $lt: [
