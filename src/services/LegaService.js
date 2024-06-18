@@ -23,7 +23,7 @@ class LegaService {
     try {
       const database = await databaseConfig.collegaAllaCollezione(NOME_COLLEZIONE)
       const objectId = ObjectId.createFromHexString(id);
-      return await database.find({ _id: objectId }).toArray();
+      return await database.findOne({ _id: objectId }).toArray();
     } catch (err) {
       console.error('Errore nel recupero del documento:', err);
     }
