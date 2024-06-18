@@ -63,7 +63,7 @@ class LegaService {
     }
   }
   
-  async aggiungiUtenteALega(id, listaAggiornata) {
+  async aggiungiUtenteALega(id, listaAggiornata, res) {
     const database = await databaseConfig.collegaAllaCollezione(NOME_COLLEZIONE)
     try {
       const objectId = ObjectId.createFromHexString(id);
@@ -73,7 +73,7 @@ class LegaService {
       );
       res.status(200).send({ message: 'Aggiornamento riuscito', result });
     } catch (err) {
-        res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
+      res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
     }
     finally
     {

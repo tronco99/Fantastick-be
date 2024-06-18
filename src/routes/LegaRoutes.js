@@ -45,7 +45,7 @@ router.post('/nonRegisVisib', async (req, res) => {
 router.post('/iscriviUserALega', async (req, res) => {
   try {
     const { listaAggiornata, idLega } = req.body;
-    const leghe = await legaService.aggiungiUtenteALega(listaAggiornata, idLega);
+    const leghe = await legaService.aggiungiUtenteALega(idLega, listaAggiornata, res);
     res.json(leghe);
   } catch (err) {
     res.status(500).json({ message: err.message });
