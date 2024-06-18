@@ -62,13 +62,13 @@ class LegaService {
     }
   }
   
-  async aggiungiUtenteALega(id, listaUser) {
+  async aggiungiUtenteALega(id, listaAggiornata) {
     const database = await databaseConfig.collegaAllaCollezione(NOME_COLLEZIONE)
     
     try {
       const result = await database.updateOne(
           { _id: id },
-          { $push: { LIDUSER: listaUser } }
+          { $push: { LIDUSER: listaAggiornata } }
       );
       res.status(200).send({ message: 'Aggiornamento riuscito', result });
     } catch (err) {
