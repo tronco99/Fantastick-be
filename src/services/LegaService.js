@@ -81,28 +81,39 @@ class LegaService {
     try {
       const database = await databaseConfig.collegaAllaCollezione(COLLEZIONE_LEGA)
       const objectId = ObjectId.createFromHexString(idLega);  
-      const queryGetByIdPartecipantiNickname = [
+      const queryGetByIdPartecipantiNickname = 
+      [
         {
           "$match": {
-            "_id": objectId,
-            "LIDUSER": { "$exists": true, "$ne": [] },
-            "LIDUSERINATTESA": { "$exists": true, "$ne": [] }
+            "_id": objectId
           }
         },
         {
           "$addFields": {
             "LIDUSER_ObjectId": {
-              "$map": {
-                "input": "$LIDUSER",
-                "as": "userId",
-                "in": { "$toObjectId": "$$userId" }
+              "$cond": {
+                "if": { "$isArray": "$LIDUSER" },
+                "then": {
+                  "$map": {
+                    "input": "$LIDUSER",
+                    "as": "userId",
+                    "in": { "$toObjectId": "$$userId" }
+                  }
+                },
+                "else": []
               }
             },
             "LIDUSERINATTESA_ObjectId": {
-              "$map": {
-                "input": "$LIDUSERINATTESA",
-                "as": "userId",
-                "in": { "$toObjectId": "$$userId" }
+              "$cond": {
+                "if": { "$isArray": "$LIDUSERINATTESA" },
+                "then": {
+                  "$map": {
+                    "input": "$LIDUSERINATTESA",
+                    "as": "userId",
+                    "in": { "$toObjectId": "$$userId" }
+                  }
+                },
+                "else": []
               }
             }
           }
@@ -139,14 +150,14 @@ class LegaService {
             "NMAXUSER": 1, 
             "userIscritti_CNICKNAME": {
               "$map": {
-                "input": "$userDetails",
+                "input": { "$ifNull": ["$userDetails", []] },
                 "as": "user",
                 "in": "$$user.CNICKNAME"
               }
             },
             "userInAttesa_CNICKNAME": {
               "$map": {
-                "input": "$userInAttesaDetails",
+                "input": { "$ifNull": ["$userInAttesaDetails", []] },
                 "as": "user",
                 "in": "$$user.CNICKNAME"
               }
