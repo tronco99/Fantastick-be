@@ -128,7 +128,7 @@ class LegaService {
                 },
                 "else": []
               }
-            },
+            }
           }
         },
         {
@@ -147,7 +147,7 @@ class LegaService {
             "as": "userInAttesaDetails"
           }
         },
-  			{
+        {
           "$lookup": {
             "from": "USER",
             "localField": "LIDUSERADMIN_ObjectId",
@@ -168,26 +168,35 @@ class LegaService {
             "DDATAFINE": 1,
             "LIDUSER": 1,
             "LIDUSERADMIN": 1,
-            "NMAXUSER": 1, 
-            "userIscritti_CNICKNAME": {
+            "NMAXUSER": 1,
+            "userIscritti": {
               "$map": {
                 "input": { "$ifNull": ["$userDetails", []] },
                 "as": "user",
-                "in": "$$user.CNICKNAME"
+                "in": {
+                  "id": { "$toString": "$$user._id" },
+                  "nickname": "$$user.CNICKNAME"
+                }
               }
             },
-            "userInAttesa_CNICKNAME": {
+            "userInAttesa": {
               "$map": {
                 "input": { "$ifNull": ["$userInAttesaDetails", []] },
                 "as": "user",
-                "in": "$$user.CNICKNAME"
+                "in": {
+                  "id": { "$toString": "$$user._id" },
+                  "nickname": "$$user.CNICKNAME"
+                }
               }
             },
-            "userAdmin_CNICKNAME": {
+            "userAdmin": {
               "$map": {
                 "input": { "$ifNull": ["$userAdminDetails", []] },
                 "as": "user",
-                "in": "$$user.CNICKNAME"
+                "in": {
+                  "id": { "$toString": "$$user._id" },
+                  "nickname": "$$user.CNICKNAME"
+                }
               }
             }
           }
