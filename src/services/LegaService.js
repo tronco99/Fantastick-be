@@ -207,25 +207,25 @@ class LegaService {
     const database = await databaseConfig.collegaAllaCollezione(COLLEZIONE_LEGA)
     try {
       const objectId = ObjectId.createFromHexString(idLega);
-      const result = await database.updateOne(
+    
+      const result = await database.findOneAndUpdate(
         {
           _id: objectId,
           $expr: {
             $lt: [
-              {
-                $size: "$LIDUSER"
-              },
+              { $size: "$LIDUSER" },
               "$NMAXUSER"
             ]
           }
         },
         {
-          $push: {
-            LIDUSER: idUtente
-          }
-        }
+          $addToSet: { LIDUSER: idUtente },
+          $pull: { LIDUSERINATTESA: idUtente }
+        },
+        { returnDocument: 'after' }
       );
-      res.status(200).send({ message: 'Aggiornate ' + result.modifiedCount + ' righe', result });
+
+      res.status(200).send({ message: 'Aggionato', result });
     } catch (err) {
       res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
     }
