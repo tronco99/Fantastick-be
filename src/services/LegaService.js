@@ -169,7 +169,7 @@ class LegaService {
             "LIDUSER": 1,
             "LIDUSERADMIN": 1,
             "NMAXUSER": 1,
-            "userIscritti": {
+            "userIscritti_CNICKNAME": {
               "$map": {
                 "input": { "$ifNull": ["$userDetails", []] },
                 "as": "user",
@@ -179,7 +179,7 @@ class LegaService {
                 }
               }
             },
-            "userInAttesa": {
+            "userInAttesa_CNICKNAME": {
               "$map": {
                 "input": { "$ifNull": ["$userInAttesaDetails", []] },
                 "as": "user",
@@ -189,7 +189,7 @@ class LegaService {
                 }
               }
             },
-            "userAdmin": {
+            "userAdmin_CNICKNAME": {
               "$map": {
                 "input": { "$ifNull": ["$userAdminDetails", []] },
                 "as": "user",
