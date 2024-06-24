@@ -85,7 +85,7 @@ class LegaService {
       [
         {
           "$match": {
-            "_id": objectId
+            "_id": ObjectId('65ef43ec8d5e31e1ec159571')
           }
         },
         {
@@ -115,7 +115,20 @@ class LegaService {
                 },
                 "else": []
               }
-            }
+            },
+            "LIDUSERADMIN_ObjectId": {
+              "$cond": {
+                "if": { "$isArray": "$LIDUSERADMIN" },
+                "then": {
+                  "$map": {
+                    "input": "$LIDUSERADMIN",
+                    "as": "userId",
+                    "in": { "$toObjectId": "$$userId" }
+                  }
+                },
+                "else": []
+              }
+            },
           }
         },
         {
@@ -132,6 +145,14 @@ class LegaService {
             "localField": "LIDUSERINATTESA_ObjectId",
             "foreignField": "_id",
             "as": "userInAttesaDetails"
+          }
+        },
+  			{
+          "$lookup": {
+            "from": "USER",
+            "localField": "LIDUSERADMIN_ObjectId",
+            "foreignField": "_id",
+            "as": "userAdminDetails"
           }
         },
         {
@@ -158,6 +179,13 @@ class LegaService {
             "userInAttesa_CNICKNAME": {
               "$map": {
                 "input": { "$ifNull": ["$userInAttesaDetails", []] },
+                "as": "user",
+                "in": "$$user.CNICKNAME"
+              }
+            },
+            "userAdmin_CNICKNAME": {
+              "$map": {
+                "input": { "$ifNull": ["$userAdminDetails", []] },
                 "as": "user",
                 "in": "$$user.CNICKNAME"
               }
