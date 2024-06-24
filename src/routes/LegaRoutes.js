@@ -42,6 +42,16 @@ router.post('/nonRegisVisib', async (req, res) => {
   }
 });
 
+
+router.post('/legaPartecipantiNickname', async (req, res) => {
+  try {
+    const risultato = await legaService.getByIdPartecipantiNickname(req.body.idLega);
+    res.json(risultato[0]);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 router.post('/iscriviUserALega', async (req, res) => {
   try {
     const { idLega, idUtente } = req.body;
