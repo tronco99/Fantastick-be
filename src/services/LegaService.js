@@ -261,7 +261,7 @@ class LegaService {
           }
         },
         {
-          $push: {
+          $addToSet: {
             LIDUSERINATTESA: idUtente
           }
         }
@@ -275,5 +275,74 @@ class LegaService {
       await databaseConfig.chiudiConnessione();
     }
   }
+
+  async rimuoviUtenteInAttesaLega(idLega, idUtente, res) {
+    const database = await databaseConfig.collegaAllaCollezione(COLLEZIONE_LEGA)
+    try {
+      const objectId = ObjectId.createFromHexString(idLega);
+      const result = await database.updateOne(
+        {
+          _id: objectId
+        },
+        {
+          $pull: { LIDUSERINATTESA: idUtente },
+          $push: { LIDUSERRIMOSSI: idUtente }
+        }
+      );
+      res.status(200).send({ message: 'Aggiornate ' + result.modifiedCount + ' righe', result });
+    } catch (err) {
+      res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
+    }
+    finally
+    {
+      await databaseConfig.chiudiConnessione();
+    }
+  }
+
+  async rendiAmdinUtente(idLega, idUtente, res) {
+    const database = await databaseConfig.collegaAllaCollezione(COLLEZIONE_LEGA)
+    try {
+      const objectId = ObjectId.createFromHexString(idLega);
+      const result = await database.updateOne(
+        {
+          _id: objectId
+        },
+        {
+          $addToSet: { LIDUSERADMIN: idUtente }
+        }
+      );
+      res.status(200).send({ message: 'Aggiornate ' + result.modifiedCount + ' righe', result });
+    } catch (err) {
+      res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
+    }
+    finally
+    {
+      await databaseConfig.chiudiConnessione();
+    }
+  }
+  
+  async rimuoviUtenteALega(idLega, idUtente, res) {
+    const database = await databaseConfig.collegaAllaCollezione(COLLEZIONE_LEGA)
+    try {
+      const objectId = ObjectId.createFromHexString(idLega);
+      const result = await database.updateOne(
+        {
+          _id: objectId
+        },
+        {
+          $pull: { LIDUSER: idUtente },
+          $push: { LIDUSERRIMOSSI: idUtente }
+        }
+      );
+      res.status(200).send({ message: 'Aggiornate ' + result.modifiedCount + ' righe', result });
+    } catch (err) {
+      res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
+    }
+    finally
+    {
+      await databaseConfig.chiudiConnessione();
+    }
+  }
 }
+
 module.exports = LegaService;

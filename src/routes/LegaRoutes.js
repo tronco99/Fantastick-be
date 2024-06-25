@@ -72,4 +72,34 @@ router.post('/inserisciUserInAttesaLega', async (req, res) => {
   }
 });
 
+router.post('/rimuoviRichiestaUtente', async (req, res) => {
+  try {
+    const { idLega, idUtente } = req.body;
+    const leghe = await legaService.rimuoviUtenteInAttesaLega(idLega, idUtente, res);
+    res.json(leghe);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.post('/rendiAmdinUtente', async (req, res) => {
+  try {
+    const { idLega, idUtente } = req.body;
+    const leghe = await legaService.rendiAmdinUtente(idLega, idUtente, res);
+    res.json(leghe);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.post('/rimuoviUtenteALega', async (req, res) => {
+  try {
+    const { idLega, idUtente } = req.body;
+    const leghe = await legaService.rimuoviUtenteALega(idLega, idUtente, res);
+    res.json(leghe);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;
