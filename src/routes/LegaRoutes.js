@@ -16,7 +16,6 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const risultato = await legaService.getById(req.params.id);
-    console.log(risultato)
     res.json(risultato[0]);
   } catch (err) {
     res.status(500).json({ message: err.message });

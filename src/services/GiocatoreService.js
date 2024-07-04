@@ -3,34 +3,34 @@ const { ObjectId } = require('mongodb');
 
 const NOME_COLLEZIONE = 'GIOCATORE'
 
-const databaseConfig = new DatabaseConfig();
+let databaseConfig;
+let collection;
 
 class GiocatoreService {
+  constructor() {
+    this.databaseConfig = new DatabaseConfig();
+    this.init();
+  }
+
+  async init() {
+    await this.databaseConfig.collegaAlDB();
+    collection = this.databaseConfig.getCollezione(NOME_COLLEZIONE);
+  }
+
   async getAll() {
     try {
-      const database = await databaseConfig.collegaAlDB()
-      const result = await database.collection(NOME_COLLEZIONE).find({}).toArray();
-      return result
+      return await collection.find({}).toArray();
     } catch (err) {
       console.error('Errore nel recupero del documento:', err);
-    }
-    finally
-    {
-      await databaseConfig.chiudiConnessione();
     }
   }
 
   async getById(id) {
     try {
-      const database = await databaseConfig.collegaAlDB()
-      const result = await database.collection(NOME_COLLEZIONE).findOne({ _id: new ObjectId(id) });
-      return result
+      const objectId = ObjectId.createFromHexString(id);
+      return await collection.findOne({ _id: objectId });
     } catch (err) {
       console.error('Errore nel recupero del documento:', err);
-    }
-    finally
-    {
-      await databaseConfig.chiudiConnessione();
     }
   }
 }

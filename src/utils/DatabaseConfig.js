@@ -11,27 +11,26 @@ const client = new MongoClient(uri, {
 });
 
 class DatabaseConfig {
+  constructor() {
+    this.database = null;
+  }
+
   async collegaAlDB() {
       await client.connect();
       console.log('Apro la connessione')
       try {
-        const db = client.db('COCACOLASTICK');
-        return db
+        this.database = client.db('COCACOLASTICK'); 
       } catch (err) {
         console.error('Errore in fase di connessione al db:', err);
       }
   }
 
-  async collegaAllaCollezione(NOME_COLLEZIONE) {
-    await client.connect();
-    console.log('Apro la connessione')
-    try {
-      const db = client.db('COCACOLASTICK');
-      return await db.collection(NOME_COLLEZIONE)
-    } catch (err) {
-      console.error('Errore in fase di connessione al db:', err);
+  getCollezione(collezioneNome) {
+    if (!this.database) {
+      throw new Error('La connessione al database non è stata inizializzata.');
     }
-}
+    return this.database.collection(collezioneNome);
+  }
 
   async chiudiConnessione() {
     try {
@@ -43,5 +42,11 @@ class DatabaseConfig {
     }
   }
 }
+
+process.on('SIGINT', async () => {
+  const db = new DatabaseConfig();
+  await db.chiudiConnessione();
+  process.exit(0);
+});
 
 module.exports = DatabaseConfig;

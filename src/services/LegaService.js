@@ -1,56 +1,49 @@
 const DatabaseConfig = require('../utils/DatabaseConfig');
-const MongoQueries = require('../utils/MongoQueries');
 const { ObjectId } = require('mongodb');
 
-const COLLEZIONE_LEGA = 'LEGA'
+const NOME_COLLEZIONE = 'LEGA'
 
-const databaseConfig = new DatabaseConfig();
-const mongoQueries = new MongoQueries();
+let databaseConfig;
+let collection;
 
 class LegaService {
+  constructor() {
+    this.databaseConfig = new DatabaseConfig();
+    this.init();
+  }
+
+  async init() {
+    await this.databaseConfig.collegaAlDB();
+    collection = this.databaseConfig.getCollezione(NOME_COLLEZIONE);
+  }
+
   async getAll() {
     try {
-      const database = await databaseConfig.collegaAllaCollezione(COLLEZIONE_LEGA)
-      return await database.find({}).toArray();
+      return await collection.find({}).toArray();
     } catch (err) {
       console.error('Errore nel recupero del documento:', err);
-    }
-    finally
-    {
-      await databaseConfig.chiudiConnessione();
     }
   }
 
   async getById(id) {
     try {
-      const database = await databaseConfig.collegaAllaCollezione(COLLEZIONE_LEGA)
       const objectId = ObjectId.createFromHexString(id);
-      return await database.find({ _id: objectId }).toArray();
+      return await collection.find({ _id: objectId }).toArray();
     } catch (err) {
       console.error('Errore nel recupero del documento:', err);
-    }
-    finally
-    {
-      await databaseConfig.chiudiConnessione();
     }
   }
 
   async getLeghePerUtente(id) {
     try {
-      const database = await databaseConfig.collegaAllaCollezione(COLLEZIONE_LEGA)
-      return await database.find({ LIDUSER: id }).toArray();
+      return await collection.find({ LIDUSER: id }).toArray();
     } catch (err) {
       console.error('Errore nel recupero del documento:', err);
-    }
-    finally
-    {
-      await databaseConfig.chiudiConnessione();
     }
   }
 
   async getLegheNonRegistratoVisib(id, visibilita) {
     try {
-      const database = await databaseConfig.collegaAllaCollezione(COLLEZIONE_LEGA)
       const queryGetLegheNonRegistratoVisib = {
         CVISIBILITA: {
           $in: visibilita
@@ -67,19 +60,14 @@ class LegaService {
           ]
         }
       };      
-      return await database.find(queryGetLegheNonRegistratoVisib).toArray();
+      return await collection.find(queryGetLegheNonRegistratoVisib).toArray();
     } catch (err) {
       console.error('Errore nel recupero del documento:', err);
-    }
-    finally
-    {
-      await databaseConfig.chiudiConnessione();
     }
   }
 
   async getByIdPartecipantiNickname(idLega) {
     try {
-      const database = await databaseConfig.collegaAllaCollezione(COLLEZIONE_LEGA)
       const objectId = ObjectId.createFromHexString(idLega);  
       const queryGetByIdPartecipantiNickname = 
       [
@@ -202,22 +190,16 @@ class LegaService {
           }
         }
       ];
-      return await database.aggregate(queryGetByIdPartecipantiNickname).toArray();
+      return await collection.aggregate(queryGetByIdPartecipantiNickname).toArray();
     } catch (err) {
       console.error('Errore nel recupero del documento:', err);
-    }
-    finally
-    {
-      await databaseConfig.chiudiConnessione();
     }
   }
   
   async aggiungiUtenteALega(idLega, idUtente, res) {
-    const database = await databaseConfig.collegaAllaCollezione(COLLEZIONE_LEGA)
     try {
       const objectId = ObjectId.createFromHexString(idLega);
-    
-      const result = await database.findOneAndUpdate(
+      const result = await collection.findOneAndUpdate(
         {
           _id: objectId,
           $expr: {
@@ -238,17 +220,12 @@ class LegaService {
     } catch (err) {
       res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
     }
-    finally
-    {
-      await databaseConfig.chiudiConnessione();
-    }
   }
 
   async aggiungiUtenteInAttesaLega(idLega, idUtente, res) {
-    const database = await databaseConfig.collegaAllaCollezione(COLLEZIONE_LEGA)
     try {
       const objectId = ObjectId.createFromHexString(idLega);
-      const result = await database.updateOne(
+      const result = await collection.updateOne(
         {
           _id: objectId,
           $expr: {
@@ -270,17 +247,12 @@ class LegaService {
     } catch (err) {
       res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
     }
-    finally
-    {
-      await databaseConfig.chiudiConnessione();
-    }
   }
 
   async rimuoviUtenteInAttesaLega(idLega, idUtente, res) {
-    const database = await databaseConfig.collegaAllaCollezione(COLLEZIONE_LEGA)
     try {
       const objectId = ObjectId.createFromHexString(idLega);
-      const result = await database.updateOne(
+      const result = await collection.updateOne(
         {
           _id: objectId
         },
@@ -293,17 +265,12 @@ class LegaService {
     } catch (err) {
       res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
     }
-    finally
-    {
-      await databaseConfig.chiudiConnessione();
-    }
   }
 
   async rendiAmdinUtente(idLega, idUtente, res) {
-    const database = await databaseConfig.collegaAllaCollezione(COLLEZIONE_LEGA)
     try {
       const objectId = ObjectId.createFromHexString(idLega);
-      const result = await database.updateOne(
+      const result = await collection.updateOne(
         {
           _id: objectId
         },
@@ -315,17 +282,12 @@ class LegaService {
     } catch (err) {
       res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
     }
-    finally
-    {
-      await databaseConfig.chiudiConnessione();
-    }
   }
   
   async rimuoviUtenteALega(idLega, idUtente, res) {
-    const database = await databaseConfig.collegaAllaCollezione(COLLEZIONE_LEGA)
     try {
       const objectId = ObjectId.createFromHexString(idLega);
-      const result = await database.updateOne(
+      const result = await collection.updateOne(
         {
           _id: objectId
         },
@@ -337,10 +299,6 @@ class LegaService {
       res.status(200).send({ message: 'Aggiornate ' + result.modifiedCount + ' righe', result });
     } catch (err) {
       res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
-    }
-    finally
-    {
-      await databaseConfig.chiudiConnessione();
     }
   }
 }
