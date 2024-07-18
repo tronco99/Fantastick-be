@@ -33,6 +33,17 @@ class CategorieService {
       console.error('Errore nel recupero del documento:', err);
     }
   }
+
+  async aggiungiCategorie(categorie, res) {
+    try {
+      const result = await collection.insertMany(categorie);
+      console.log('inseriti i categorie')
+
+     // res.status(200).send({ message: 'Inserite ' + result.modifiedCount + ' righe', result });
+    } catch (err) {
+    //  res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
+    }
+  }
 }
 
 module.exports = CategorieService;

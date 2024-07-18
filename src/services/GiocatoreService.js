@@ -33,6 +33,16 @@ class GiocatoreService {
       console.error('Errore nel recupero del documento:', err);
     }
   }
+
+  async aggiungiGiocatori(giocatori, res) {
+    try {
+      const result = await collection.insertMany(giocatori);
+      console.log('inseriti i gioccatori')
+   //   res.status(200).send({ message: 'Inserite ' + result.modifiedCount + ' righe', result });
+    } catch (err) {
+     // res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
+    }
+  }
 }
 
 module.exports = GiocatoreService;

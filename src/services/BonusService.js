@@ -33,6 +33,17 @@ class BonusService {
       console.error('Errore nel recupero del documento:', err);
     }
   }
+
+  async aggiungiBonus(bonus, res) {
+    try {
+      const result = await collection.insertMany(bonus);
+      console.log('inseriti i bonus')
+
+   //   res.status(200).send({ message: 'Inserite ' + result.modifiedCount + ' righe', result });
+    } catch (err) {
+    //  res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
+    }
+  }
 }
 
 module.exports = BonusService;

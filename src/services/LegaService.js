@@ -301,6 +301,16 @@ class LegaService {
       res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
     }
   }
+
+  async aggiungiLega(lega, res) {
+    try {
+      const result = await collection.insertOne(lega);
+      console.log('inserita la lega')
+   //   res.status(200).send({ message: 'Inserite ' + result.modifiedCount + ' righe', result });
+    } catch (err) {
+    //  res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
+    }
+  }
 }
 
 module.exports = LegaService;
