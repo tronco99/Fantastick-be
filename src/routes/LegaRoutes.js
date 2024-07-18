@@ -2,7 +2,7 @@ const express = require('express');
 const LegaService = require('../services/LegaService');
 const router = express.Router();
 
-const legaService = new LegaService();
+const legaService = new LegaService(true);
 
 router.get('/', async (req, res) => {
   try {

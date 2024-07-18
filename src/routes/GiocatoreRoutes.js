@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const GiocatoreService = require('../services/GiocatoreService');
 
-const giocatoreService = new GiocatoreService();
+const giocatoreService = new GiocatoreService(true);
 
 router.get('/', async (req, res) => {
   try {

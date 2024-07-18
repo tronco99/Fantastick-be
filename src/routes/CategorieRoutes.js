@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const CategorieService = require('../services/CategorieService');
 
-const categorieService = new CategorieService();
+const categorieService = new CategorieService(true);
 
 router.get('/', async (req, res) => {
   try {

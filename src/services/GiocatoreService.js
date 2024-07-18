@@ -7,9 +7,10 @@ let databaseConfig;
 let collection;
 
 class GiocatoreService {
-  constructor() {
+  constructor(init) {
     this.databaseConfig = new DatabaseConfig();
-    this.init();
+    if(init) 
+      this.init();
   }
 
   async init() {
@@ -36,11 +37,9 @@ class GiocatoreService {
 
   async aggiungiGiocatori(giocatori, res) {
     try {
-      const result = await collection.insertMany(giocatori);
-      console.log('inseriti i gioccatori')
-   //   res.status(200).send({ message: 'Inserite ' + result.modifiedCount + ' righe', result });
+      return await collection.insertMany(giocatori);
     } catch (err) {
-     // res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
+      res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
     }
   }
 }

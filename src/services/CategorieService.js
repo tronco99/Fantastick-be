@@ -7,9 +7,10 @@ let databaseConfig;
 let collection;
 
 class CategorieService {
-  constructor() {
+  constructor(init) {
     this.databaseConfig = new DatabaseConfig();
-    this.init();
+    if(init) 
+      this.init();
   }
 
   async init() {
@@ -36,12 +37,9 @@ class CategorieService {
 
   async aggiungiCategorie(categorie, res) {
     try {
-      const result = await collection.insertMany(categorie);
-      console.log('inseriti i categorie')
-
-     // res.status(200).send({ message: 'Inserite ' + result.modifiedCount + ' righe', result });
+      return await collection.insertMany(categorie);
     } catch (err) {
-    //  res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
+      res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
     }
   }
 }

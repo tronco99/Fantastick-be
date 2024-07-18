@@ -7,9 +7,11 @@ let databaseConfig;
 let collection;
 
 class LegaService {
-  constructor() {
+
+  constructor(init) {
     this.databaseConfig = new DatabaseConfig();
-    this.init();
+    if (init)
+      this.init();
   }
 
   async init() {
@@ -29,6 +31,14 @@ class LegaService {
     try {
       const objectId = ObjectId.createFromHexString(id);
       return await collection.find({ _id: objectId }).toArray();
+    } catch (err) {
+      console.error('Errore nel recupero del documento:', err);
+    }
+  }
+
+  async getByCnome(nome) {
+    try {
+      return await collection.find({ CNOME: nome }).toArray();
     } catch (err) {
       console.error('Errore nel recupero del documento:', err);
     }
@@ -59,7 +69,7 @@ class LegaService {
             "$NMAXUSER"
           ]
         }
-      };      
+      };
       return await collection.find(queryGetLegheNonRegistratoVisib).toArray();
     } catch (err) {
       console.error('Errore nel recupero del documento:', err);
@@ -68,134 +78,134 @@ class LegaService {
 
   async getByIdPartecipantiNickname(idLega) {
     try {
-      const objectId = ObjectId.createFromHexString(idLega);  
-      const queryGetByIdPartecipantiNickname = 
-      [
-        {
-          "$match": {
-            "_id": objectId
-          }
-        },
-        {
-          "$addFields": {
-            "LIDUSER_ObjectId": {
-              "$cond": {
-                "if": { "$isArray": "$LIDUSER" },
-                "then": {
-                  "$map": {
-                    "input": "$LIDUSER",
-                    "as": "userId",
-                    "in": { "$toObjectId": "$$userId" }
-                  }
-                },
-                "else": []
-              }
-            },
-            "LIDUSERINATTESA_ObjectId": {
-              "$cond": {
-                "if": { "$isArray": "$LIDUSERINATTESA" },
-                "then": {
-                  "$map": {
-                    "input": "$LIDUSERINATTESA",
-                    "as": "userId",
-                    "in": { "$toObjectId": "$$userId" }
-                  }
-                },
-                "else": []
-              }
-            },
-            "LIDUSERADMIN_ObjectId": {
-              "$cond": {
-                "if": { "$isArray": "$LIDUSERADMIN" },
-                "then": {
-                  "$map": {
-                    "input": "$LIDUSERADMIN",
-                    "as": "userId",
-                    "in": { "$toObjectId": "$$userId" }
-                  }
-                },
-                "else": []
-              }
+      const objectId = ObjectId.createFromHexString(idLega);
+      const queryGetByIdPartecipantiNickname =
+        [
+          {
+            "$match": {
+              "_id": objectId
             }
-          }
-        },
-        {
-          "$lookup": {
-            "from": "USER",
-            "localField": "LIDUSER_ObjectId",
-            "foreignField": "_id",
-            "as": "userDetails"
-          }
-        },
-        {
-          "$lookup": {
-            "from": "USER",
-            "localField": "LIDUSERINATTESA_ObjectId",
-            "foreignField": "_id",
-            "as": "userInAttesaDetails"
-          }
-        },
-        {
-          "$lookup": {
-            "from": "USER",
-            "localField": "LIDUSERADMIN_ObjectId",
-            "foreignField": "_id",
-            "as": "userAdminDetails"
-          }
-        },
-        {
-          "$project": {
-            "CNOME": 1,
-            "CTIPO": 1,
-            "CCATEGORIA": 1,
-            "CVISIBILITA": 1,
-            "CNOMEVALUTA": 1,
-            "NBUDGET": 1,
-            "CLOGO": 1,
-            "DDATAINIZIO": 1,
-            "DDATAFINE": 1,
-            "LIDUSER": 1,
-            "LIDUSERADMIN": 1,
-            "NMAXUSER": 1,
-            "userIscritti_CNICKNAME": {
-              "$map": {
-                "input": { "$ifNull": ["$userDetails", []] },
-                "as": "user",
-                "in": {
-                  "id": { "$toString": "$$user._id" },
-                  "nickname": "$$user.CNICKNAME"
+          },
+          {
+            "$addFields": {
+              "LIDUSER_ObjectId": {
+                "$cond": {
+                  "if": { "$isArray": "$LIDUSER" },
+                  "then": {
+                    "$map": {
+                      "input": "$LIDUSER",
+                      "as": "userId",
+                      "in": { "$toObjectId": "$$userId" }
+                    }
+                  },
+                  "else": []
                 }
-              }
-            },
-            "userInAttesa_CNICKNAME": {
-              "$map": {
-                "input": { "$ifNull": ["$userInAttesaDetails", []] },
-                "as": "user",
-                "in": {
-                  "id": { "$toString": "$$user._id" },
-                  "nickname": "$$user.CNICKNAME"
+              },
+              "LIDUSERINATTESA_ObjectId": {
+                "$cond": {
+                  "if": { "$isArray": "$LIDUSERINATTESA" },
+                  "then": {
+                    "$map": {
+                      "input": "$LIDUSERINATTESA",
+                      "as": "userId",
+                      "in": { "$toObjectId": "$$userId" }
+                    }
+                  },
+                  "else": []
                 }
-              }
-            },
-            "userAdmin_CNICKNAME": {
-              "$map": {
-                "input": { "$ifNull": ["$userAdminDetails", []] },
-                "as": "user",
-                "in": {
-                  "id": { "$toString": "$$user._id" },
-                  "nickname": "$$user.CNICKNAME"
+              },
+              "LIDUSERADMIN_ObjectId": {
+                "$cond": {
+                  "if": { "$isArray": "$LIDUSERADMIN" },
+                  "then": {
+                    "$map": {
+                      "input": "$LIDUSERADMIN",
+                      "as": "userId",
+                      "in": { "$toObjectId": "$$userId" }
+                    }
+                  },
+                  "else": []
                 }
               }
             }
+          },
+          {
+            "$lookup": {
+              "from": "USER",
+              "localField": "LIDUSER_ObjectId",
+              "foreignField": "_id",
+              "as": "userDetails"
+            }
+          },
+          {
+            "$lookup": {
+              "from": "USER",
+              "localField": "LIDUSERINATTESA_ObjectId",
+              "foreignField": "_id",
+              "as": "userInAttesaDetails"
+            }
+          },
+          {
+            "$lookup": {
+              "from": "USER",
+              "localField": "LIDUSERADMIN_ObjectId",
+              "foreignField": "_id",
+              "as": "userAdminDetails"
+            }
+          },
+          {
+            "$project": {
+              "CNOME": 1,
+              "CTIPO": 1,
+              "CCATEGORIA": 1,
+              "CVISIBILITA": 1,
+              "CNOMEVALUTA": 1,
+              "NBUDGET": 1,
+              "CLOGO": 1,
+              "DDATAINIZIO": 1,
+              "DDATAFINE": 1,
+              "LIDUSER": 1,
+              "LIDUSERADMIN": 1,
+              "NMAXUSER": 1,
+              "userIscritti_CNICKNAME": {
+                "$map": {
+                  "input": { "$ifNull": ["$userDetails", []] },
+                  "as": "user",
+                  "in": {
+                    "id": { "$toString": "$$user._id" },
+                    "nickname": "$$user.CNICKNAME"
+                  }
+                }
+              },
+              "userInAttesa_CNICKNAME": {
+                "$map": {
+                  "input": { "$ifNull": ["$userInAttesaDetails", []] },
+                  "as": "user",
+                  "in": {
+                    "id": { "$toString": "$$user._id" },
+                    "nickname": "$$user.CNICKNAME"
+                  }
+                }
+              },
+              "userAdmin_CNICKNAME": {
+                "$map": {
+                  "input": { "$ifNull": ["$userAdminDetails", []] },
+                  "as": "user",
+                  "in": {
+                    "id": { "$toString": "$$user._id" },
+                    "nickname": "$$user.CNICKNAME"
+                  }
+                }
+              }
+            }
           }
-        }
-      ];
+        ];
       return await collection.aggregate(queryGetByIdPartecipantiNickname).toArray();
     } catch (err) {
       console.error('Errore nel recupero del documento:', err);
     }
   }
-  
+
   async aggiungiUtenteALega(idLega, idUtente, res) {
     try {
       const objectId = ObjectId.createFromHexString(idLega);
@@ -283,7 +293,7 @@ class LegaService {
       res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
     }
   }
-  
+
   async rimuoviUtenteALega(idLega, idUtente, res) {
     try {
       const objectId = ObjectId.createFromHexString(idLega);
@@ -304,11 +314,9 @@ class LegaService {
 
   async aggiungiLega(lega, res) {
     try {
-      const result = await collection.insertOne(lega);
-      console.log('inserita la lega')
-   //   res.status(200).send({ message: 'Inserite ' + result.modifiedCount + ' righe', result });
+      return await collection.insertOne(lega);
     } catch (err) {
-    //  res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
+      res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
     }
   }
 }

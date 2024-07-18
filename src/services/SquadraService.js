@@ -7,9 +7,10 @@ let databaseConfig;
 let collection;
 
 class SquadraService {
-  constructor() {
+  constructor(init) {
     this.databaseConfig = new DatabaseConfig();
-    this.init();
+    if(init) 
+      this.init();
   }
 
   async init() {

@@ -7,9 +7,10 @@ let databaseConfig;
 let collection;
 
 class BonusService {
-  constructor() {
+  constructor(init) {
     this.databaseConfig = new DatabaseConfig();
-    this.init();
+    if(init) 
+      this.init();
   }
 
   async init() {
@@ -36,12 +37,9 @@ class BonusService {
 
   async aggiungiBonus(bonus, res) {
     try {
-      const result = await collection.insertMany(bonus);
-      console.log('inseriti i bonus')
-
-   //   res.status(200).send({ message: 'Inserite ' + result.modifiedCount + ' righe', result });
+      return await collection.insertMany(bonus);
     } catch (err) {
-    //  res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
+      res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
     }
   }
 }
