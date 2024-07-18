@@ -22,5 +22,18 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+router.post('/postCreaLega', async (req, res) => {
+  try {
+    const { nuovaLega, nuoveCategorie, nuoviBonus } = req.body;
+    //const leghe = await legaService.rimuoviUtenteInAttesaLega(idLega, idUtente, res);
+    console.log(nuovaLega);
+    console.log(nuoveCategorie);
+    console.log(nuoviBonus);
+    res.json(nuovaLega);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 
 module.exports = router;
