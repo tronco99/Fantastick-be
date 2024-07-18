@@ -3,11 +3,12 @@ const { MongoClient } = require('mongodb');
 const uri = 'mongodb+srv://COCACOLADMIN:JaetwlyFUfMuNkim@cocacolastick.iygril0.mongodb.net/?retryWrites=true&w=majority&appName=COCACOLASTICK'
 
 const client = new MongoClient(uri, {
-    serverApi: {
-        version: '1',
-        strict: true,
-        deprecationErrors: true,
-    }
+   serverSelectionTimeoutMS: 5000, 
+   serverApi: {
+    version: '1',
+    strict: true,
+    deprecationErrors: true,
+  }
 });
 
 class DatabaseConfig {
@@ -16,13 +17,13 @@ class DatabaseConfig {
   }
 
   async collegaAlDB() {
-      await client.connect();
-      console.log('Apro la connessione')
-      try {
-        this.database = client.db('COCACOLASTICK'); 
-      } catch (err) {
-        console.error('Errore in fase di connessione al db:', err);
-      }
+    await client.connect();
+    console.log('Apro la connessione')
+    try {
+      this.database = client.db('COCACOLASTICK');
+    } catch (err) {
+      console.error('Errore in fase di connessione al db:', err);
+    }
   }
 
   getCollezione(collezioneNome) {
