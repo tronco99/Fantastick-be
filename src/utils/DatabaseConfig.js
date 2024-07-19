@@ -4,18 +4,28 @@ const uri = 'mongodb+srv://COCACOLADMIN:JaetwlyFUfMuNkim@cocacolastick.iygril0.m
 
 const client = new MongoClient(uri, {
    serverSelectionTimeoutMS: 5000, 
-   serverApi: {
+    serverApi: {
     version: '1',
     strict: true,
     deprecationErrors: true,
   }
 });
 
+client.on('close', async () => {
+  console.log('Connection to MongoDB closed, attempting to reconnect...');
+  new BonusService(true);
+  new CategorieService(true);
+  new GiocatoreService(true);
+  new LegaService(true);
+  new SquadraService(true);
+  new UserService(true);
+});
+
 class DatabaseConfig {
   constructor() {
     this.database = null;
   }
-
+  
   async collegaAlDB() {
     await client.connect();
     console.log('Apro la connessione')
