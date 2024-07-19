@@ -74,15 +74,15 @@ router.post('/postCreaLega', async (req, res) => {
   
   
       if(leghe || bonus || categorie || giocatori) {
-        res.json(nuoviGiovatoriConId)
+        res.status(200).json({ status: 'success', message: 'Lega inserita' })
       } else {
-        res.status(500).json({message: 'Errore in fase di inserimento'})
+        res.status(500).json({ status: 'error', message: 'Errore in fase di inserimento' });
       }
     } else {
-      res.status(500).json({message: 'Errore in fase di inserimento, lega già presente'})
+      res.status(500).json({ status: 'error', message: 'Errore in fase di inserimento, nome lega già presente' });
     }
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ status: 'error', message: err.message });
   }
 });
 
