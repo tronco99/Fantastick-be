@@ -72,7 +72,6 @@ router.post('/postCreaLega', async (req, res) => {
       const categorie = await categorieService.aggiungiCategorie(nuoveCategorie, res);
       const giocatori = await giocatoreService.aggiungiGiocatori(nuoviGiovatoriConId, res);
   
-  
       if(leghe || bonus || categorie || giocatori) {
         res.status(200).json({ status: '200', message: 'Lega inserita' })
       } else {
