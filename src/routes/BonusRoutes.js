@@ -42,6 +42,7 @@ router.post('/postCreaLega', async (req, res) => {
     if (legheConNomeUguale.length == 0 && nuovaLega.CNOME) {
       const objectIdCreatore = ObjectId.createFromHexString(nuovaLega.IDCREATORE);
       nuovaLega.LIDUSER = [nuovaLega.IDCREATORE];
+      nuovaLega.LIDUSERADMIN = [nuovaLega.IDCREATORE];
       nuovaLega.IDCREATORE = objectIdCreatore;
       nuovaLega._id = legaId;
 
