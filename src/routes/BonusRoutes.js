@@ -83,7 +83,7 @@ router.post('/postCreaLega', async (req, res) => {
       let categorie;
       let giocatori;
 
-    //  leghe = await legaService.aggiungiLega(nuovaLega, res);
+      leghe = await legaService.aggiungiLega(nuovaLega, res);
 
       if (nuoviBonus.length > 0) {
         bonus = await bonusService.aggiungiBonus(nuoviBonusConId, res);
