@@ -21,9 +21,16 @@ class LegaService {
 
   async getAll() {
     try {
-      return await collection.find({}).toArray();
+//      let result = await collection.find({}).toArray()
+const doc = await collection.findOne();
+if (doc) {
+  return `Collezione esiste e contiene documenti.: ${doc}`;
+} else {
+  return `Collezione esiste ma è vuota.`;
+}
+
     } catch (err) {
-      console.error('Errore nel recupero del documento:', err);
+      return 'Errore nel recupero del documento:', err;
     }
   }
 
