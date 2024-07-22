@@ -6,6 +6,7 @@ const userService = new UserService(true);
 
 router.get('/', async (req, res) => {
   try {
+    console.log('entro in user')
     const risultato = await userService.getAll();
     res.json(risultato);
   } catch (err) {
