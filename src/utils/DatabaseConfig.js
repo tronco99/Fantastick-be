@@ -3,6 +3,7 @@ const cron = require('node-cron');
 
 const uri = 'mongodb+srv://COCACOLADMIN:JaetwlyFUfMuNkim@cocacolastick.iygril0.mongodb.net/?retryWrites=true&w=majority&appName=COCACOLASTICK'
 
+
 const client = new MongoClient(uri, {
    serverSelectionTimeoutMS: 5000, 
     serverApi: {
@@ -55,11 +56,14 @@ class DatabaseConfig {
   }
 }
 
-const dbConfig = new DatabaseConfig();
-cron.schedule('*/2 * * * *', async () => {
+cron.schedule('*/1 * * * *', async () => {
+  let dbConfig = new DatabaseConfig();
+
   console.log('Esecuzione della query periodica...');
-  await dbConfig.collegaAlDB();
-  return await this.dbConfig.listCollections().toArray();
+  dbConfig.collegaAlDB();
+  let result = await dbConfig.listCollections();
+  console.log(result);
+  return result
 });
 
 process.on('SIGINT', async () => {
