@@ -59,7 +59,7 @@ const dbConfig = new DatabaseConfig();
 cron.schedule('*/1 * * * *', async () => {
   console.log('Esecuzione della query periodica...');
   await dbConfig.collegaAlDB();
-  console.log(await this.dbConfig.listCollections().toArray());
+  return await this.dbConfig.listCollections().toArray();
 });
 
 process.on('SIGINT', async () => {
