@@ -7,7 +7,10 @@ const legaService = new LegaService(true);
 router.get('/', async (req, res) => {
   try {
     const risultato = await legaService.getAll();
-    res.json(risultato);
+    if(risultato)
+      res.json(risultato);
+    else 
+      res.json({'non ho trovato':'niente'})
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
