@@ -56,7 +56,7 @@ class DatabaseConfig {
 }
 
 const dbConfig = new DatabaseConfig();
-cron.schedule('*/1 * * * *', async () => {
+cron.schedule('*/2 * * * *', async () => {
   console.log('Esecuzione della query periodica...');
   await dbConfig.collegaAlDB();
   return await this.dbConfig.listCollections().toArray();

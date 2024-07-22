@@ -7,16 +7,12 @@ const legaService = new LegaService(true);
 router.get('/', async (req, res) => {
   try {
     const risultato = await legaService.getAll();
-    console.log('riultato: '+ risultato )
-    if(risultato)
-      res.json(risultato);
-    else 
-      res.json({'non ho trovato':'niente'})
+    res.json(risultato);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
-  
+
 router.get('/:id', async (req, res) => {
   try {
     const risultato = await legaService.getById(req.params.id);
@@ -58,7 +54,7 @@ router.post('/legaPartecipantiNickname', async (req, res) => {
 router.post('/iscriviUserALega', async (req, res) => {
   try {
     const { idLega, idUtente } = req.body;
-    const leghe = await legaService.  aggiungiUtenteALega(idLega, idUtente, res);
+    const leghe = await legaService.aggiungiUtenteALega(idLega, idUtente, res);
     res.json(leghe);
   } catch (err) {
     res.status(500).json({ message: err.message });
