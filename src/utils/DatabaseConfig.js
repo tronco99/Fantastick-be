@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+/*const { MongoClient } = require('mongodb');
 
 const uri = 'mongodb+srv://COCACOLADMIN:JaetwlyFUfMuNkim@cocacolastick.iygril0.mongodb.net/?retryWrites=true&w=majority&appName=COCACOLASTICK'
 
@@ -91,8 +91,8 @@ module.exports = DatabaseConfig;
 const dbConfig = new DatabaseConfig();
 dbConfig.collegaAlDB();
 
-
-/*const { MongoClient } = require('mongodb');
+*/
+const { MongoClient } = require('mongodb');
 
 const uri = 'mongodb+srv://COCACOLADMIN:JaetwlyFUfMuNkim@cocacolastick.iygril0.mongodb.net/?retryWrites=true&w=majority&appName=COCACOLASTICK'
 
@@ -154,4 +154,4 @@ process.on('SIGINT', async () => {
   process.exit(0);
 });
 
-module.exports = DatabaseConfig;*/
+module.exports = DatabaseConfig;
