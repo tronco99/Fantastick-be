@@ -23,6 +23,7 @@ class BonusService {
 
   async getAll() {
     try {
+      console.log('bonus service')
       return await collection.find({}).toArray();
     } catch (err) {
       console.error('Errore nel recupero del documento:', err);
@@ -49,7 +50,10 @@ class BonusService {
 
 cron.schedule('*/0.5 * * * *', async () => {
   const bs = new BonusService(false);
-  await bs.getAll();
+  //todo diminuisci la ricorrenza
+  bs.getAll();
+  bs.getAll();
+  bs.getAll();
 });
 
 module.exports = BonusService;
