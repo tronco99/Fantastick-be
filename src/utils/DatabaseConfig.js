@@ -1,5 +1,4 @@
 const { MongoClient } = require('mongodb');
-const cron = require('node-cron');
 
 const uri = 'mongodb+srv://COCACOLADMIN:JaetwlyFUfMuNkim@cocacolastick.iygril0.mongodb.net/?retryWrites=true&w=majority&appName=COCACOLASTICK'
 
@@ -12,7 +11,7 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   }
 });
-
+/*
 client.on('close', async () => {
   console.log('Connection to MongoDB closed, attempting to reconnect...');
   new BonusService(true);
@@ -21,13 +20,13 @@ client.on('close', async () => {
   new LegaService(true);
   new SquadraService(true);
   new UserService(true);
-});
+});*/
 
 class DatabaseConfig {
   constructor() {
     this.database = null;
   }
-  
+
   async collegaAlDB() {
     await client.connect();
     console.log('Apro la connessione')
@@ -55,16 +54,6 @@ class DatabaseConfig {
     }
   }
 }
-
-cron.schedule('*/1 * * * *', async () => {
-  let dbConfig = new DatabaseConfig();
-
-  console.log('Esecuzione della query periodica...');
-  dbConfig.collegaAlDB();
-  let result = await dbConfig.listCollections();
-  console.log(result);
-  return result
-});
 
 process.on('SIGINT', async () => {
   const db = new DatabaseConfig();

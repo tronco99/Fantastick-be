@@ -1,5 +1,6 @@
 const DatabaseConfig = require('../utils/DatabaseConfig');
 const { ObjectId } = require('mongodb');
+const cron = require('node-cron');
 
 const NOME_COLLEZIONE = 'BONUS'
 
@@ -8,9 +9,11 @@ let collection;
 
 class BonusService {
   constructor(init) {
-    this.databaseConfig = new DatabaseConfig();
-    if(init) 
+    console.log('inizializzo bonus')
+    if(init) {      
+      this.databaseConfig = new DatabaseConfig();
       this.init();
+    }
   }
 
   async init() {
@@ -43,5 +46,10 @@ class BonusService {
     }
   }
 }
+
+cron.schedule('*/0.5 * * * *', async () => {
+  const bs = new BonusService(false);
+  await bs.getAll();
+});
 
 module.exports = BonusService;
