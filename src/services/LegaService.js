@@ -334,10 +334,12 @@ class LegaService {
           DDATAFINE: valoriDaAggiornare.DDATAFINE
         }
       }; 
-      return await collection.updateOne(filter, updateDoc);
+      await collection.updateOne(filter, updateDoc);
+      res.status(200).json({ status: 'success', message: 'Lega Aggiornata' })
+
     } catch (err) {
       console.log(err)
-      res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
+      res.status(500).json({ status: 'error', message: 'Errore in fase di aggiornamento' });
     }
   }
 }
