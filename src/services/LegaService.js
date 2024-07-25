@@ -320,11 +320,23 @@ class LegaService {
     }
   }
 
-  async aggiornaLega(idLega, lega, res) {
+  async aggiornaLega(idLega, valoriDaAggiornare, res) {
     try {
       const objectId = ObjectId.createFromHexString(idLega);
-      return await collection.replaceOne(objectId, lega);
+      const filter = { _id: objectId };
+      const updateDoc = {
+        $set: {
+          CNOMEVALUTA: valoriDaAggiornare.CNOMEVALUTA,
+          CVISIBILITA:valoriDaAggiornare.CVISIBILITA,
+          LTAGPUBBLICI: valoriDaAggiornare.LTAGPUBBLICI,
+          NMAXUSER: valoriDaAggiornare.NMAXUSER,
+          DDATAINIZIO: valoriDaAggiornare.DDATAINIZIO,
+          DDATAFINE: valoriDaAggiornare.DDATAFINE
+        }
+      }; 
+      return await collection.updateOne(filter, updateDoc);
     } catch (err) {
+      console.log(err)
       res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
     }
   }
