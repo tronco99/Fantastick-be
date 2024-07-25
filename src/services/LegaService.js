@@ -162,6 +162,7 @@ class LegaService {
               "CNOMEVALUTA": 1,
               "NBUDGET": 1,
               "CLOGO": 1,
+              "LTAGPUBBLICI" : 1,
               "DDATAINIZIO": 1,
               "DDATAFINE": 1,
               "LIDUSER": 1,
@@ -334,9 +335,9 @@ class LegaService {
           DDATAFINE: valoriDaAggiornare.DDATAFINE
         }
       }; 
+      console.log(updateDoc)
       await collection.updateOne(filter, updateDoc);
       res.status(200).json({ status: 'success', message: 'Lega Aggiornata' })
-
     } catch (err) {
       console.log(err)
       res.status(500).json({ status: 'error', message: 'Errore in fase di aggiornamento' });
