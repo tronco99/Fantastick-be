@@ -319,6 +319,15 @@ class LegaService {
       res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
     }
   }
+
+  async aggiornaLega(idLega, lega, res) {
+    try {
+      const objectId = ObjectId.createFromHexString(idLega);
+      return await collection.replaceOne(objectId, lega);
+    } catch (err) {
+      res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
+    }
+  }
 }
 
 module.exports = LegaService;
