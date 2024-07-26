@@ -37,6 +37,7 @@ router.post('/postCreaLega', async (req, res) => {
     const legheConNomeUguale = await legaService.getByCnome(nuovaLega.CNOME);
     let nuoviBonusConId;
     let nuoviGiovatoriConId;
+    let nuoveCategorieConId;
     let nGiocatori = [];
 
     if (legheConNomeUguale.length == 0 && nuovaLega.CNOME) {
@@ -62,8 +63,9 @@ router.post('/postCreaLega', async (req, res) => {
               ...giocatore,
               _id: new ObjectId(),
               IDCREATORE: objectIdCreatore
-            }))
+            })),
           );
+
           nuoveCategorie.forEach(categoria => {
             categoria.LIDGIOCATORI = [];
             nGiocatori.push(categoria.giocatoriCollegati.length)
@@ -74,6 +76,14 @@ router.post('/postCreaLega', async (req, res) => {
               categoria.LIDGIOCATORI.push(...idGiocatoriCollegati);
             });
           });
+
+          nuoveCategorieConId = nuoveCategorie.map(doc => ({
+            ...doc,
+            IDLEGA: legaId,
+            IDCREATORE: objectIdCreatore,
+            _id: new ObjectId()
+          }));
+          
         } catch (err) {
           res.status(500).json({ status: 'error', message: 'Categorie e giocatori non correttamente valorizzati' })
         }
@@ -90,9 +100,9 @@ router.post('/postCreaLega', async (req, res) => {
         bonus = await bonusService.aggiungiBonus(nuoviBonusConId, res);
       }
 
-      if (nuoveCategorie.length > 0 && !nGiocatori.includes(0)) {
+      if (nuoveCategorieConId.length > 0 && !nGiocatori.includes(0)) {
         try {
-          categorie = await categorieService.aggiungiCategorie(nuoveCategorie, res);
+          categorie = await categorieService.aggiungiCategorie(nuoveCategorieConId, res);
           giocatori = await giocatoreService.aggiungiGiocatori(nuoviGiovatoriConId, res);
         } catch (err) {
           res.status(500).json({ status: 'error', message: 'Categorie e giocatori non correttamente valorizzati' })

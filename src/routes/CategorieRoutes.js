@@ -22,5 +22,15 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+router.post('/categoriePerLega', async (req, res) => {
+  try {
+    const { idLega } = req.body;
+    const leghe = await categorieService.getCategoriePerLega(idLega, res);
+    res.json(leghe);
+  }catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 
 module.exports = router;
