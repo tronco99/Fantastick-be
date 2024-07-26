@@ -22,5 +22,17 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+router.post('/squadrePerLega', async (req, res) => {
+  try {
+    let { idLega } = req.body;
+    let squadre = await squadraService.getSquadrePerLega(idLega, res);
+    if(squadre) {
+      res.status(200).json({ status: 'success', message: 'Estrazione compleatata', squadre: squadre })
+    }
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
 
 module.exports = router;

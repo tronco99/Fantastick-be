@@ -9,7 +9,7 @@ let collection;
 class SquadraService {
   constructor(init) {
     this.databaseConfig = new DatabaseConfig();
-    if(init) 
+    if (init)
       this.init();
   }
 
@@ -28,15 +28,19 @@ class SquadraService {
 
   async getById(id) {
     try {
-      const database = await databaseConfig.collegaAlDB()
-      const result = await database.collection(NOME_COLLEZIONE).findOne({ _id: new ObjectId(id) });
-      return result
+      return await this.collection.findOne({ _id: new ObjectId(id) });
     } catch (err) {
       console.error('Errore nel recupero del documento:', err);
     }
-    finally
-    {
-      await databaseConfig.chiudiConnessione();
+  }
+
+  async getSquadrePerLega(id, res) {
+    try {
+      const objectId = ObjectId.createFromHexString(id);
+      return await collection.find({ IDLEGA: objectId }).toArray();
+    } catch (err) {
+      console.log(err.message)
+      res.status(500).send({ message: 'Estrazione fallita', error: err.message });
     }
   }
 }
