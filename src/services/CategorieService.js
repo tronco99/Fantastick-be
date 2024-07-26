@@ -87,7 +87,6 @@ class CategorieService {
         }
       ]
       return await collection.aggregate(queryPerEstrarreIGiocatori).toArray();
-
     } catch (err) {
       console.log(err.message)
       res.status(500).send({ message: 'Estrazione fallita', error: err.message });
