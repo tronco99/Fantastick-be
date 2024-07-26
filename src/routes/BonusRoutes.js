@@ -115,5 +115,16 @@ router.post('/postCreaLega', async (req, res) => {
   }
 });
 
+router.post('/bonusPerLega', async (req, res) => {
+  try {
+    let { idLega } = req.body;
+    let bonus = await bonusService.getBonusPerLega(idLega, res);
+    if(bonus) {
+      res.status(200).json({ status: 'success', message: 'Estrazione compleatata', regolamento: bonus })
+    }
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
 
 module.exports = router;

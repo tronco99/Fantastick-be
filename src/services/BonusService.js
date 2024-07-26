@@ -10,7 +10,7 @@ let collection;
 class BonusService {
   constructor(init) {
     console.log('inizializzo bonus')
-    if(init) {      
+    if (init) {
       this.databaseConfig = new DatabaseConfig();
       this.init();
     }
@@ -44,6 +44,16 @@ class BonusService {
       return await collection.insertMany(bonus);
     } catch (err) {
       res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
+    }
+  }
+
+  async getBonusPerLega(id, res) {
+    try {
+      const objectId = ObjectId.createFromHexString(id);
+      return await collection.find({ IDLEGA: objectId }).toArray();
+    } catch (err) {
+      console.log(err.message)
+      res.status(500).send({ message: 'Estrazione fallita', error: err.message });
     }
   }
 }
