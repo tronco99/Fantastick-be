@@ -12,6 +12,7 @@ app.use('/api/giocatore', require('./routes/GiocatoreRoutes'));
 app.use('/api/lega', require('./routes/LegaRoutes'));
 app.use('/api/squadra', require('./routes/SquadraRoutes'));
 app.use('/api/user', require('./routes/UserRoutes'));
+app.use('/api/azione', require('./routes/AzioneRoutes'));
 async function run() {
 }
 
