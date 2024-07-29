@@ -78,6 +78,7 @@ class CategorieService {
                 input: "$giocatoriDettagli",
                 as: "giocatore",
                 in: {
+                  nuovoIdGiocatore: "$$giocatore.giocatoreId",
                   nuovoNomeGiocatore: "$$giocatore.CNOME",
                   nuovoCostoGiocatore: "$$giocatore.NPREZZO"
                 }

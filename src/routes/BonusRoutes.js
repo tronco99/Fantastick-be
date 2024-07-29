@@ -58,12 +58,16 @@ router.post('/postCreaLega', async (req, res) => {
 
       if (nuoveCategorie.length > 0) {
         try {
-          nuoviGiovatoriConId = nuoveCategorie.flatMap(doc =>
-            doc.giocatoriCollegati.map(giocatore => ({
-              ...giocatore,
-              _id: new ObjectId(),
-              IDCREATORE: objectIdCreatore
-            })),
+          nuoviGiovatoriConId = nuoveCategorie.flatMap(doc => 
+            doc.giocatoriCollegati.map(giocatore => {
+              const newId = new ObjectId();
+              giocatore.giocatoreId = newId;
+              return {
+                ...giocatore,
+                _id: newId,
+                IDCREATORE: objectIdCreatore
+              };
+            })
           );
 
           nuoveCategorie.forEach(categoria => {
@@ -83,7 +87,6 @@ router.post('/postCreaLega', async (req, res) => {
             IDCREATORE: objectIdCreatore,
             _id: new ObjectId()
           }));
-          
         } catch (err) {
           res.status(500).json({ status: 'error', message: 'Categorie e giocatori non correttamente valorizzati' })
         }
@@ -94,7 +97,7 @@ router.post('/postCreaLega', async (req, res) => {
       let categorie;
       let giocatori;
 
-      leghe = await legaService.aggiungiLega(nuovaLega, res);
+       leghe = await legaService.aggiungiLega(nuovaLega, res);
 
       if (nuoviBonus.length > 0) {
         bonus = await bonusService.aggiungiBonus(nuoviBonusConId, res);
@@ -107,7 +110,7 @@ router.post('/postCreaLega', async (req, res) => {
         } catch (err) {
           res.status(500).json({ status: 'error', message: 'Categorie e giocatori non correttamente valorizzati' })
         }
-      } else if(nGiocatori.includes(0)) {
+      } else if (nGiocatori.includes(0)) {
         res.status(500).json({ status: 'error', message: 'Giocatori non inseriti' })
         return 0
       }
@@ -129,7 +132,7 @@ router.post('/bonusPerLega', async (req, res) => {
   try {
     let { idLega } = req.body;
     let bonus = await bonusService.getBonusPerLega(idLega, res);
-    if(bonus) {
+    if (bonus) {
       res.status(200).json({ status: 'success', message: 'Estrazione compleatata', regolamento: bonus })
     }
   } catch (err) {
