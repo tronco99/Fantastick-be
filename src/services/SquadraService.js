@@ -43,6 +43,15 @@ class SquadraService {
       res.status(500).send({ message: 'Estrazione fallita', error: err.message });
     }
   }
+
+  async inserisciSquadra(nuovaSquadra, res) {
+    try {
+      return await collection.insertOne(nuovaSquadra);
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({ message: 'Aggiornamento fallito', error: err.message });
+    }
+  }
 }
 
 module.exports = SquadraService;

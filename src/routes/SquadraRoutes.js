@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const SquadraService = require('../services/SquadraService');
+const { ObjectId } = require('mongodb');
 
 const squadraService = new SquadraService(true);
 
@@ -34,5 +35,30 @@ router.post('/squadrePerLega', async (req, res) => {
   }
 });
 
+router.post('/inserisciSquadra', async (req, res) => {
+  try {
+    let { idUtente, idLega, idGiocatori, budgetAvanzato } = req.body;
+    const objectIdUtente = ObjectId.createFromHexString(idUtente);
+    const objectIdLega = ObjectId.createFromHexString(idLega);
+    let nuovaSquadra;
+    if(objectIdUtente && objectIdLega && idGiocatori.length > 0) {
+      nuovaSquadra = {
+        IDUSER: objectIdUtente,
+        IDLEGA: objectIdLega,
+        LIDGIOCATORI: idGiocatori,
+        DINSERIMENTO: new Date(),
+        NBUDGETAVANZATO: budgetAvanzato
+      }
+      let squadre = await squadraService.inserisciSquadra(nuovaSquadra, res);
+      if(squadre) {
+        res.status(200).json({ status: 'success', message: 'Estrazione compleatata', squadre: squadre })
+      }
+    } else {
+      res.status(500).json({ status: 'error', message: 'I valori inseriti non sono corretti' });
+    }
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
 
 module.exports = router;
