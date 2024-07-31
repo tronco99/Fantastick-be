@@ -183,17 +183,25 @@ class AzioneService {
   }
 
   calculateAndSortBonus(data) {
-    return data
+      return data
       .map(squadra => {
-        const bonusGiocatori = squadra.giocatori.reduce((acc, giocatore) => {
-          const totalBonus = giocatore.bonus.reduce((sum, bonus) => sum + bonus.bonusGiocatore, 0);
-          return acc + totalBonus;
-        }, 0);
+          // Calcola il bonus totale per ogni giocatore
+          const giocatori = squadra.giocatori.map(giocatore => {
+              const bonusTotaleGiocatore = giocatore.bonus.reduce((sum, bonus) => sum + bonus.bonusGiocatore, 0);
+              return {
+                  ...giocatore,
+                  bonusTotaleGiocatore
+              };
+          });
 
-        return {
-          ...squadra,
-          bonusGiocatori
-        };
+          // Calcola il bonus totale per la squadra
+          const bonusGiocatori = giocatori.reduce((acc, giocatore) => acc + giocatore.bonusTotaleGiocatore, 0);
+
+          return {
+              ...squadra,
+              giocatori,
+              bonusGiocatori
+          };
       })
       .sort((a, b) => b.bonusGiocatori - a.bonusGiocatori);
   }
