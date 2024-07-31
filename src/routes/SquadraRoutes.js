@@ -37,7 +37,8 @@ router.post('/squadrePerLega', async (req, res) => {
 
 router.post('/inserisciSquadra', async (req, res) => {
   try {
-    let { idUtente, idLega, idGiocatori, budgetAvanzato } = req.body;
+    let { idUtente, idLega, idGiocatori, budgetAvanzato, nomeSquadra } = req.body;
+    //todo controlla che la squadra non esista gia
     const objectIdUtente = ObjectId.createFromHexString(idUtente);
     const objectIdLega = ObjectId.createFromHexString(idLega);
     let nuovaSquadra;
@@ -45,6 +46,7 @@ router.post('/inserisciSquadra', async (req, res) => {
       nuovaSquadra = {
         IDUSER: objectIdUtente,
         IDLEGA: objectIdLega,
+        NOMESQUADRA: nomeSquadra,
         LIDGIOCATORI: idGiocatori,
         DINSERIMENTO: new Date(),
         NBUDGETAVANZATO: budgetAvanzato
