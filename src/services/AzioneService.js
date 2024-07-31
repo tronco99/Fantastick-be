@@ -183,27 +183,51 @@ class AzioneService {
   }
 
   calculateAndSortBonus(data) {
-      return data
+    return data
       .map(squadra => {
-          // Calcola il bonus totale per ogni giocatore
-          const giocatori = squadra.giocatori.map(giocatore => {
-              const bonusTotaleGiocatore = giocatore.bonus.reduce((sum, bonus) => sum + bonus.bonusGiocatore, 0);
-              return {
-                  ...giocatore,
-                  bonusTotaleGiocatore
-              };
-          });
-
-          // Calcola il bonus totale per la squadra
-          const bonusGiocatori = giocatori.reduce((acc, giocatore) => acc + giocatore.bonusTotaleGiocatore, 0);
-
+        // Calcola il bonus totale per ogni giocatore
+        const giocatori = squadra.giocatori.map(giocatore => {
+          const bonusTotaleGiocatore = giocatore.bonus.reduce((sum, bonus) => sum + bonus.bonusGiocatore, 0);
           return {
-              ...squadra,
-              giocatori,
-              bonusGiocatori
+            ...giocatore,
+            bonusTotaleGiocatore
           };
+        });
+
+        // Calcola il bonus totale per la squadra
+        const bonusGiocatori = giocatori.reduce((acc, giocatore) => acc + giocatore.bonusTotaleGiocatore, 0);
+
+        return {
+          ...squadra,
+          giocatori,
+          bonusGiocatori
+        };
       })
       .sort((a, b) => b.bonusGiocatori - a.bonusGiocatori);
+  }
+
+  calculateAndSortNome(data) {
+    return data
+      .map(squadra => {
+        // Calcola il bonus totale per ogni giocatore
+        const giocatori = squadra.giocatori.map(giocatore => {
+          const bonusTotaleGiocatore = giocatore.bonus.reduce((sum, bonus) => sum + bonus.bonusGiocatore, 0);
+          return {
+            ...giocatore,
+            bonusTotaleGiocatore
+          };
+        });
+
+        // Calcola il bonus totale per la squadra
+        const bonusGiocatori = giocatori.reduce((acc, giocatore) => acc + giocatore.bonusTotaleGiocatore, 0);
+
+        return {
+          ...squadra,
+          giocatori,
+          bonusGiocatori
+        };
+      })
+      .sort((a, b) => a.CNOME.localeCompare(b.CNOME));
   }
 
   async getAzioniGiocatoriPerLega(idLega, res) {
@@ -323,14 +347,44 @@ class AzioneService {
           }
         ]
       let data = await collection.aggregate(queryPerEstrarreIGiocatori).toArray();
-      return this.calculateAndSortBonus(data).reduce((acc, curr) => {
+      return this.calculateAndSortNome(data).reduce((acc, curr) => {
         return acc.concat(curr.giocatori);
-    }, []);
+      }, []);
     } catch (err) {
       console.log(err.message)
       res.status(500).send({ message: 'Estrazione fallita', error: err.message });
     }
-  }  
+  }
+
+  async replaceAzione(azione, res) {
+    try {
+      let azioneObjectId = this.convertToObjectId(azione);
+
+      const result = await collection.updateOne(
+        {
+          IDLEGA: azioneObjectId.IDLEGA, IDGIOCATORE: azioneObjectId.IDGIOCATORE
+        },
+        { $set: azioneObjectId },
+        { upsert: true } // Aggiunge il documento se non esiste
+      );
+      res.status(200).send({ status: "success", message: 'Aggiornate ' + result.modifiedCount + ' righe', result });
+    } catch (err) {
+      console.log(err.message)
+      res.status(500).send({ status: "error", message: 'Aggiornamento fallito', error: err.message });
+    }
+
+
+  }
+
+  convertToObjectId(obj) {
+    obj.IDLEGA = ObjectId.createFromHexString(obj.IDLEGA);
+    obj.IDGIOCATORE = ObjectId.createFromHexString(obj.IDGIOCATORE);
+    obj.LAZIONI = obj.LAZIONI.map(action => {
+      action.IDBONUS = ObjectId.createFromHexString(action.IDBONUS);
+      return action;
+    });
+    return obj;
+  }
 }
 
 module.exports = AzioneService;
