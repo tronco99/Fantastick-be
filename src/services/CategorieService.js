@@ -94,6 +94,229 @@ class CategorieService {
     }
   }
 
-}
+  async getCategoriePerLegaConBonus(id, res) {
+    try {
+      const objectId = ObjectId.createFromHexString(id);
+      const queryPerEstrarreIGiocatori = 
+      [
+        {
+          $match: { IDLEGA: objectId }
+        },
+        {
+          $addFields: {
+            LIDGIOCATORI: {
+              $map: {
+                input: "$LIDGIOCATORI",
+                as: "id",
+                in: { $toObjectId: "$$id" }
+              }
+            }
+          }
+        },
+        {
+          $lookup: {
+            from: "GIOCATORE",
+            localField: "LIDGIOCATORI",
+            foreignField: "_id",
+            as: "giocatoriDettagli"
+          }
+        },
+        {
+          $lookup: {
+            from: "AZIONE",
+            localField: "LIDGIOCATORI",
+            foreignField: "IDGIOCATORE",
+            as: "azioniDettagli"
+          }
+        },
+        {
+          $unwind: {
+            path: "$azioniDettagli",
+            preserveNullAndEmptyArrays: true
+          }
+        },
+        {
+          $lookup: {
+            from: "BONUS",
+            localField: "azioniDettagli.LAZIONI.IDBONUS",
+            foreignField: "_id",
+            as: "bonusDettagli"
+          }
+        },
+        {
+          $group: {
+            _id: "$_id",
+            CDESCRIZIONE: { $first: "$CDESCRIZIONE" },
+            giocatoriDettagli: { $first: "$giocatoriDettagli" },
+            azioniDettagli: { $push: "$azioniDettagli" },
+            bonusDettagli: { $push: "$bonusDettagli" }
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            CDESCRIZIONE: "$CDESCRIZIONE" ,
+            giocatoriDettagli:  "$giocatoriDettagli" ,
 
+            CDESCRIZIONE: 1,
+            giocatoriCollegati: {
+              $map: {
+                input: "$giocatoriDettagli",
+                as: "giocatore",
+                in: {
+                  nuovoIdGiocatore: "$$giocatore._id",
+                  nuovoNomeGiocatore: "$$giocatore.CNOME",
+                  nuovoCostoGiocatore: "$$giocatore.NPREZZO",
+                  bonus: {
+                    $filter: {
+                      input: "$bonusDettagli",
+                      as: "bonus",
+                      cond: {
+                        $in: ["$$giocatore._id", "$$bonus.IDGIOCATORE"]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+
+
+      /*[
+        {
+          $match: { IDLEGA: objectId }
+        },
+        {
+          $addFields: {
+            LIDGIOCATORI: {
+              $map: {
+                input: "$LIDGIOCATORI",
+                as: "id",
+                in: { $toObjectId: "$$id" }
+              }
+            }
+          }
+        },
+        {
+          $lookup: {
+            from: "GIOCATORE",
+            localField: "LIDGIOCATORI",
+            foreignField: "_id",
+            as: "giocatoriDettagli"
+          }
+        },
+        {
+          $lookup: {
+            from: "AZIONE",
+            localField: "LIDGIOCATORI",
+            foreignField: "IDGIOCATORE",
+            as: "azioniDettagli"
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            CDESCRIZIONE: 1,
+            giocatoriCollegati: {
+              $map: {
+                input: "$giocatoriDettagli",
+                as: "giocatore",
+                in: {
+                  nuovoIdGiocatore: "$$giocatore.giocatoreId",
+                  nuovoNomeGiocatore: "$$giocatore.CNOME",
+                  nuovoCostoGiocatore: "$$giocatore.NPREZZO",
+                }
+              }
+            }
+          }
+        }
+      ]
+
+
+
+      /*
+      [
+        {
+          $match: { IDLEGA: objectId }
+        },
+        {
+          $addFields: {
+            LIDGIOCATORI: {
+              $map: {
+                input: "$LIDGIOCATORI",
+                as: "id",
+                in: { $toObjectId: "$$id" }
+              }
+            }
+          }
+        },
+        {
+          $lookup: {
+            from: "GIOCATORE",
+            localField: "LIDGIOCATORI",
+            foreignField: "_id",
+            as: "giocatoriDettagli"
+          }
+        },
+        {
+          $lookup: {
+            from: "AZIONE",
+            localField: "LIDGIOCATORI",
+            foreignField: "IDGIOCATORE",
+            as: "azioniDettagli"
+          }
+        },
+        {
+          $addFields: {
+            LBONUS: {
+              $map: {
+                input: "$azioniDettagli.LAZIONI",
+                as: "id",
+                in: "$azioniDettagli.LAZIONI"
+              }
+            }
+          }
+        },
+        {
+          $lookup: {
+            from: "BONUS",
+            localField: "LBONUS._id.IDBONUS",
+            foreignField: "_id",
+            as: "bonusDettagli"
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            CDESCRIZIONE: 1,
+            bonusDettagli: "$bonusDettagli",
+
+            giocatoriCollegati: {
+              $map: {
+                input: "$giocatoriDettagli",
+                as: "giocatore",
+                in: {
+                  nuovoIdGiocatore: "$$giocatore.giocatoreId",
+                  nuovoNomeGiocatore: "$$giocatore.CNOME",
+                  nuovoCostoGiocatore: "$$giocatore.NPREZZO",
+                  azioniDettagli: "$azioniDettagli",
+                  bonusDettagli: "$bonusDettagli",
+      
+               //   azioniDettagli: "$azioniDettagli.LAZIONI",
+                 // azioniPunti: "$azioniDettagli.LAZIONI"
+                }
+              }
+            }
+          }
+        }
+      ]*/
+      return await collection.aggregate(queryPerEstrarreIGiocatori).toArray();
+    } catch (err) {
+      console.log(err.message)
+      res.status(500).send({ message: 'Estrazione fallita', error: err.message });
+    }
+  }
+}
 module.exports = CategorieService;

@@ -205,6 +205,132 @@ class AzioneService {
       })
       .sort((a, b) => b.bonusGiocatori - a.bonusGiocatori);
   }
+
+  async getAzioniGiocatoriPerLega(idLega, res) {
+    try {
+      const objectId = ObjectId.createFromHexString(idLega);
+
+      const queryPerEstrarreIGiocatori =
+        [
+          {
+            $match: { IDLEGA: objectId }
+          },
+          {
+            $lookup: {
+              from: "CATEGORIE",
+              localField: "IDLEGA",
+              foreignField: "IDLEGA",
+              as: "categorie_info"
+            }
+          },
+          { $unwind: "$categorie_info" },
+          {
+            $addFields: {
+              "categorie_info.LIDGIOCATORIO": {
+                $map: {
+                  input: "$categorie_info.LIDGIOCATORI",
+                  as: "id",
+                  in: { $toObjectId: "$$id" }
+                }
+              }
+            }
+          },
+          {
+            $lookup: {
+              from: "GIOCATORE",
+              localField: "categorie_info.LIDGIOCATORIO",
+              foreignField: "_id",
+              as: "giocatori_info"
+            }
+          },
+          { $unwind: "$giocatori_info" },
+          {
+            $unwind: "$LAZIONI"
+          },
+          {
+            $lookup: {
+              from: "BONUS",
+              localField: "LAZIONI.IDBONUS",
+              foreignField: "_id",
+              as: "bonus_info"
+            }
+          },
+          { $unwind: "$bonus_info" },
+          {
+            $addFields: {
+              "LAZIONI.bonus": {
+                bonusId: "$bonus_info._id",
+                bonusTitolo: "$bonus_info.CTITOLO",
+                bonusDescrizione: "$bonus_info.CDESCRIZIONE",
+                bonusPunteggio: "$bonus_info.NPUNTEGGIO",
+                bonusQuantita: "$LAZIONI.NQUANTITA",
+                bonusGiocatore: { $multiply: ["$bonus_info.NPUNTEGGIO", "$LAZIONI.NQUANTITA"] },
+                giocatoreId: "$IDGIOCATORE"
+              }
+            }
+          },
+          {
+            $group: {
+              _id: {
+                giocatoreId: "$giocatori_info._id",
+                giocatoreNome: "$giocatori_info.CNOME",
+                giocatorePrezzo: "$giocatori_info.NPREZZO",
+                categoriaNome: "$categorie_info.CDESCRIZIONE",
+              },
+              bonus: {
+                $push: "$LAZIONI.bonus"
+              }
+            }
+          },
+          {
+            $addFields: {
+              bonus: {
+                $filter: {
+                  input: "$bonus",
+                  as: "item",
+                  cond: { $ne: ["$$item.bonusId", null] }
+                }
+              }
+            }
+          },
+          {
+            $group: {
+              _id: {
+                categoriaNome: "$_id.categoriaNome",
+              },
+              giocatori: {
+                $push: {
+                  _id: "$_id.giocatoreId",
+                  CNOME: "$_id.giocatoreNome",
+                  NPREZZO: "$_id.giocatorePrezzo",
+                  bonus: {
+                    $filter: {
+                      input: "$bonus",
+                      as: "bonus",
+                      cond: { $eq: ["$$bonus.giocatoreId", "$_id.giocatoreId"] }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            $project: {
+              _id: 0,
+              categoriaNome: "$_id.categoriaNome",
+              giocatori: 1
+            }
+          }
+        ]
+      let data = await collection.aggregate(queryPerEstrarreIGiocatori).toArray();
+      return this.calculateAndSortBonus(data).reduce((acc, curr) => {
+        return acc.concat(curr.giocatori);
+    }, []);
+    } catch (err) {
+      console.log(err.message)
+      res.status(500).send({ message: 'Estrazione fallita', error: err.message });
+    }
+  }  
 }
 
 module.exports = AzioneService;

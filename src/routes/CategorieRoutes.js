@@ -33,5 +33,17 @@ router.post('/categoriePerLega', async (req, res) => {
   }
 });
 
+router.post('/postCategoriePerLegaConBonus', async (req, res) => {
+  try {
+    const { idLega } = req.body;
+    const categorie = await categorieService.getCategoriePerLegaConBonus(idLega, res);
+    if(categorie) {
+      res.status(200).json({ status: 'success', message: 'Estrazione compleatata', categorie: categorie })
+    }  }catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
 
 module.exports = router;
