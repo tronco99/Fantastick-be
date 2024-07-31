@@ -50,6 +50,9 @@ class AzioneService {
       const queryPerEstrarreIGiocatori =
         [
           {
+            $match: { IDLEGA: objectId }
+          },
+          {
             $lookup: {
               from: "SQUADRA",
               localField: "IDLEGA",
@@ -87,15 +90,6 @@ class AzioneService {
             }
           },
           { $unwind: "$giocatori_info" },
-          {
-            $lookup: {
-              from: "BONUS",
-              localField: "LAZIONI.IDBONUS",
-              foreignField: "_id",
-              as: "bonus_info"
-            }
-          },
-          { $unwind: "$bonus_info" },
           {
             $unwind: "$LAZIONI"
           },
@@ -181,27 +175,28 @@ class AzioneService {
           }
         ]
       let data = await collection.aggregate(queryPerEstrarreIGiocatori).toArray();
-      return { azione: this.calculateBonus(data) };
+      return this.calculateAndSortBonus(data);
     } catch (err) {
       console.log(err.message)
       res.status(500).send({ message: 'Estrazione fallita', error: err.message });
     }
   }
 
-  calculateBonus(data) {
-    return data.map(squadra => {
-      const bonusGiocatori = squadra.giocatori.reduce((acc, giocatore) => {
-        const totalBonus = giocatore.bonus.reduce((sum, bonus) => sum + bonus.bonusGiocatore, 0);
-        return acc + totalBonus;
-      }, 0);
+  calculateAndSortBonus(data) {
+    return data
+      .map(squadra => {
+        const bonusGiocatori = squadra.giocatori.reduce((acc, giocatore) => {
+          const totalBonus = giocatore.bonus.reduce((sum, bonus) => sum + bonus.bonusGiocatore, 0);
+          return acc + totalBonus;
+        }, 0);
 
-      return {
-        ...squadra,
-        bonusGiocatori
-      };
-    });
+        return {
+          ...squadra,
+          bonusGiocatori
+        };
+      })
+      .sort((a, b) => b.bonusGiocatori - a.bonusGiocatori);
   }
-
 }
 
 module.exports = AzioneService;
