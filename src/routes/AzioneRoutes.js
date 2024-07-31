@@ -27,8 +27,9 @@ router.post('/azionePerLega', async (req, res) => {
         const { idLega } = req.body;
         const azione = await azioneService.getAzionePerLega(idLega, res);
         if (azione) {
-          //  res.status(200).json({ status: 'success', message: 'Estrazione compleatata', azione: azione })
-            res.status(200).json({ azione })
+            res.status(200).json({ status: 'success', message: 'Estrazione compleatata', azione: azione })
+        } else {
+            res.status(500).json({ status: 'error', message: 'Estrazione non completata' })
         }
     } catch (err) {
         res.status(500).json({ message: err.message });
