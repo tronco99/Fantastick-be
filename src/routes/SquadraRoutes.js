@@ -46,7 +46,7 @@ router.post('/inserisciSquadra', async (req, res) => {
       nuovaSquadra = {
         IDUSER: objectIdUtente,
         IDLEGA: objectIdLega,
-        NOMESQUADRA: nomeSquadra,
+        CNOME: nomeSquadra,
         LIDGIOCATORI: idGiocatori,
         DINSERIMENTO: new Date(),
         NBUDGETAVANZATO: budgetAvanzato
