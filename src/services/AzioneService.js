@@ -206,7 +206,7 @@ class AzioneService {
       .sort((a, b) => b.bonusGiocatori - a.bonusGiocatori);
   }
 
- /* calculateAndSortNome(data) {
+  calculateAndSortNome(data) {
     return data
       .map(squadra => {
         // Calcola il bonus totale per ogni giocatore
@@ -227,8 +227,8 @@ class AzioneService {
           bonusGiocatori
         };
       })
-      .sort((a, b) => a.CNOME.localeCompare(b.CNOME));
-  }*/
+     // .sort((a, b) => a.CNOME.localeCompare(b.CNOME));
+  }
 
   async getAzioniGiocatoriPerLega(idLega, res) {
     try {
@@ -347,7 +347,7 @@ class AzioneService {
           }
         ]
       let data = await collection.aggregate(queryPerEstrarreIGiocatori).toArray();
-      return this.calculateAndSortBonus(data).reduce((acc, curr) => {
+      return calculateAndSortNome(data).reduce((acc, curr) => {
         return acc.concat(curr.giocatori);
       }, []);
     } catch (err) {
