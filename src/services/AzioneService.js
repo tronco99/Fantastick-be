@@ -347,7 +347,7 @@ class AzioneService {
           }
         ]
       let data = await collection.aggregate(queryPerEstrarreIGiocatori).toArray();
-      return calculateAndSortNome(data).reduce((acc, curr) => {
+      return this.calculateAndSortNome(data).reduce((acc, curr) => {
         return acc.concat(curr.giocatori);
       }, []);
     } catch (err) {
