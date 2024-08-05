@@ -323,14 +323,14 @@ class AzioneService {
           }
         ]
       let data = await collection.aggregate(queryPerEstrarreIGiocatori).toArray();
-      return this.calculateAndSortNome(data);
+      return this.calculateSortAndAccNome(data);
     } catch (err) {
       console.log(err.message)
       res.status(500).send({ message: 'Estrazione fallita', error: err.message });
     }
   }
 
-  calculateAndSortNome(data) {
+  calculateSortAndAccNome(data) {
     return data
       .map(squadra => {
         // Calcola il bonus totale per ogni giocatore

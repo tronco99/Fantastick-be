@@ -97,82 +97,83 @@ class CategorieService {
   async getCategoriePerLegaConBonus(id, res) {
     try {
       const objectId = ObjectId.createFromHexString(id);
-      const queryPerEstrarreIGiocatori = 
-      [
-        {
-          $match: { IDLEGA: objectId }
-        },
-        {
-          $addFields: {
-            LIDGIOCATORI: {
-              $map: {
-                input: "$LIDGIOCATORI",
-                as: "id",
-                in: { $toObjectId: "$$id" }
+      const queryPerEstrarreIGiocatori =
+        [
+          {
+            $match: { IDLEGA: objectId }
+          },
+          {
+            $addFields: {
+              LIDGIOCATORI: {
+                $map: {
+                  input: "$LIDGIOCATORI",
+                  as: "id",
+                  in: { $toObjectId: "$$id" }
+                }
               }
             }
-          }
-        },
-        {
-          $lookup: {
-            from: "GIOCATORE",
-            localField: "LIDGIOCATORI",
-            foreignField: "_id",
-            as: "giocatoriDettagli"
-          }
-        },
-        {
-          $lookup: {
-            from: "AZIONE",
-            localField: "LIDGIOCATORI",
-            foreignField: "IDGIOCATORE",
-            as: "azioniDettagli"
-          }
-        },
-        {
-          $unwind: {
-            path: "$azioniDettagli",
-            preserveNullAndEmptyArrays: true
-          }
-        },
-        {
-          $lookup: {
-            from: "BONUS",
-            localField: "azioniDettagli.LAZIONI.IDBONUS",
-            foreignField: "_id",
-            as: "bonusDettagli"
-          }
-        },
-        {
-          $group: {
-            _id: "$_id",
-            CDESCRIZIONE: { $first: "$CDESCRIZIONE" },
-            giocatoriDettagli: { $first: "$giocatoriDettagli" },
-            azioniDettagli: { $push: "$azioniDettagli" },
-            bonusDettagli: { $push: "$bonusDettagli" }
-          }
-        },
-        {
-          $project: {
-            _id: 1,
-            CDESCRIZIONE: "$CDESCRIZIONE" ,
-            giocatoriDettagli:  "$giocatoriDettagli" ,
+          },
+          {
+            $lookup: {
+              from: "GIOCATORE",
+              localField: "LIDGIOCATORI",
+              foreignField: "_id",
+              as: "giocatoriDettagli"
+            }
+          },
+          {
+            $lookup: {
+              from: "AZIONE",
+              localField: "LIDGIOCATORI",
+              foreignField: "IDGIOCATORE",
+              as: "azioniDettagli"
+            }
+          },
+          {
+            $unwind: {
+              path: "$azioniDettagli",
+              preserveNullAndEmptyArrays: true
+            }
+          },
+          {
+            $lookup: {
+              from: "BONUS",
+              localField: "azioniDettagli.LAZIONI.IDBONUS",
+              foreignField: "_id",
+              as: "bonusDettagli"
+            }
+          },
+          {
+            $group: {
+              _id: "$_id",
+              CDESCRIZIONE: { $first: "$CDESCRIZIONE" },
+              giocatoriDettagli: { $first: "$giocatoriDettagli" },
+              azioniDettagli: { $push: "$azioniDettagli" },
+              bonusDettagli: { $push: "$bonusDettagli" }
+            }
+          },
+          {
+            $project: {
+              _id: 1,
+              CDESCRIZIONE: "$CDESCRIZIONE",
+              giocatoriDettagli: "$giocatoriDettagli",
 
-            CDESCRIZIONE: 1,
-            giocatoriCollegati: {
-              $map: {
-                input: "$giocatoriDettagli",
-                as: "giocatore",
-                in: {
-                  nuovoIdGiocatore: "$$giocatore._id",
-                  nuovoNomeGiocatore: "$$giocatore.CNOME",
-                  nuovoCostoGiocatore: "$$giocatore.NPREZZO",
-                  bonus: {
-                    $filter: {
-                      input: "$bonusDettagli",
-                      as: "bonus",
-                      cond: {
-                        $in: ["$$giocatore._id", "$$bonus.IDGIOCATORE"]
+              CDESCRIZIONE: 1,
+              giocatoriCollegati: {
+                $map: {
+                  input: "$giocatoriDettagli",
+                  as: "giocatore",
+                  in: {
+                    nuovoIdGiocatore: "$$giocatore._id",
+                    nuovoNomeGiocatore: "$$giocatore.CNOME",
+                    nuovoCostoGiocatore: "$$giocatore.NPREZZO",
+                    bonus: {
+                      $filter: {
+                        input: "$bonusDettagli",
+                        as: "bonus",
+                        cond: {
+                          $in: ["$$giocatore._id", "$$bonus.IDGIOCATORE"]
+                        }
                       }
                     }
                   }
@@ -180,143 +181,83 @@ class CategorieService {
               }
             }
           }
-        }
-      ]
-
-
-      /*[
-        {
-          $match: { IDLEGA: objectId }
-        },
-        {
-          $addFields: {
-            LIDGIOCATORI: {
-              $map: {
-                input: "$LIDGIOCATORI",
-                as: "id",
-                in: { $toObjectId: "$$id" }
-              }
-            }
-          }
-        },
-        {
-          $lookup: {
-            from: "GIOCATORE",
-            localField: "LIDGIOCATORI",
-            foreignField: "_id",
-            as: "giocatoriDettagli"
-          }
-        },
-        {
-          $lookup: {
-            from: "AZIONE",
-            localField: "LIDGIOCATORI",
-            foreignField: "IDGIOCATORE",
-            as: "azioniDettagli"
-          }
-        },
-        {
-          $project: {
-            _id: 1,
-            CDESCRIZIONE: 1,
-            giocatoriCollegati: {
-              $map: {
-                input: "$giocatoriDettagli",
-                as: "giocatore",
-                in: {
-                  nuovoIdGiocatore: "$$giocatore.giocatoreId",
-                  nuovoNomeGiocatore: "$$giocatore.CNOME",
-                  nuovoCostoGiocatore: "$$giocatore.NPREZZO",
-                }
-              }
-            }
-          }
-        }
-      ]
-
-
-
-      /*
-      [
-        {
-          $match: { IDLEGA: objectId }
-        },
-        {
-          $addFields: {
-            LIDGIOCATORI: {
-              $map: {
-                input: "$LIDGIOCATORI",
-                as: "id",
-                in: { $toObjectId: "$$id" }
-              }
-            }
-          }
-        },
-        {
-          $lookup: {
-            from: "GIOCATORE",
-            localField: "LIDGIOCATORI",
-            foreignField: "_id",
-            as: "giocatoriDettagli"
-          }
-        },
-        {
-          $lookup: {
-            from: "AZIONE",
-            localField: "LIDGIOCATORI",
-            foreignField: "IDGIOCATORE",
-            as: "azioniDettagli"
-          }
-        },
-        {
-          $addFields: {
-            LBONUS: {
-              $map: {
-                input: "$azioniDettagli.LAZIONI",
-                as: "id",
-                in: "$azioniDettagli.LAZIONI"
-              }
-            }
-          }
-        },
-        {
-          $lookup: {
-            from: "BONUS",
-            localField: "LBONUS._id.IDBONUS",
-            foreignField: "_id",
-            as: "bonusDettagli"
-          }
-        },
-        {
-          $project: {
-            _id: 1,
-            CDESCRIZIONE: 1,
-            bonusDettagli: "$bonusDettagli",
-
-            giocatoriCollegati: {
-              $map: {
-                input: "$giocatoriDettagli",
-                as: "giocatore",
-                in: {
-                  nuovoIdGiocatore: "$$giocatore.giocatoreId",
-                  nuovoNomeGiocatore: "$$giocatore.CNOME",
-                  nuovoCostoGiocatore: "$$giocatore.NPREZZO",
-                  azioniDettagli: "$azioniDettagli",
-                  bonusDettagli: "$bonusDettagli",
-      
-               //   azioniDettagli: "$azioniDettagli.LAZIONI",
-                 // azioniPunti: "$azioniDettagli.LAZIONI"
-                }
-              }
-            }
-          }
-        }
-      ]*/
+        ]
       return await collection.aggregate(queryPerEstrarreIGiocatori).toArray();
     } catch (err) {
       console.log(err.message)
       res.status(500).send({ message: 'Estrazione fallita', error: err.message });
     }
+  }
+
+  async getCategoriePerLegaSenzaBonus(id, res) {
+    try {
+      const objectId = ObjectId.createFromHexString(id);
+      const queryPerEstrarreIGiocatori = [
+        {
+          $match: { IDLEGA: objectId }
+        },
+        {
+          $addFields: {
+            LIDGIOCATORI: {
+              $map: {
+                input: "$LIDGIOCATORI",
+                as: "id",
+                in: { $toObjectId: "$$id" }
+              }
+            }
+          }
+        },
+        {
+          $lookup: {
+            from: "GIOCATORE",
+            localField: "LIDGIOCATORI",
+            foreignField: "_id",
+            as: "giocatoriDettagli"
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            CDESCRIZIONE: 1,
+            giocatoriCollegati: {
+              $map: {
+                input: "$giocatoriDettagli",
+                as: "giocatore",
+                in: {
+                  nuovoIdGiocatore: "$$giocatore.giocatoreId",
+                  nuovoNomeGiocatore: "$$giocatore.CNOME",
+                  nuovoCostoGiocatore: "$$giocatore.NPREZZO"
+                }
+              }
+            }
+          }
+        }
+      ]
+      let data = await collection.aggregate(queryPerEstrarreIGiocatori).toArray();
+      let datoCorretto = this.calculateSortAndAccNome(data);
+      return datoCorretto
+    } catch (err) {
+      console.log(err.message)
+      res.status(500).send({ message: 'Estrazione fallita', error: err.message });
+    }
+  }
+
+  calculateSortAndAccNome(data) {
+    return {
+      status: 'success', // Usa il valore desiderato o quello dell'input
+      message: 'Estrazione compleatata', // Usa il valore desiderato o quello dell'input
+      azione: data.reduce((acc, categoria) => {
+        // Assicurati che `giocatoriCollegati` sia un array
+        const giocatori = (categoria.giocatoriCollegati || []).map(giocatore => ({
+          _id: giocatore.nuovoIdGiocatore,
+          CNOME: giocatore.nuovoNomeGiocatore,
+          NPREZZO: giocatore.nuovoCostoGiocatore,
+          bonus: [],
+          bonusTotaleGiocatore: 0
+        }));
+        return acc.concat(giocatori);
+      }, [])
+    };
   }
 }
 module.exports = CategorieService;
