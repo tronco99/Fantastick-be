@@ -206,55 +206,6 @@ class AzioneService {
       .sort((a, b) => b.bonusGiocatori - a.bonusGiocatori);
   }
 
-  calculateAndSortNome(data) {
-    return data
-      .map(squadra => {
-        // Calcola il bonus totale per ogni giocatore
-        const giocatori = squadra.giocatori.map(giocatore => {
-          const bonusTotaleGiocatore = giocatore.bonus.reduce((sum, bonus) => sum + bonus.bonusGiocatore, 0);
-          return {
-            ...giocatore,
-            bonusTotaleGiocatore
-          };
-        });
-
-        // Calcola il bonus totale per la squadra
-        const bonusGiocatori = giocatori.reduce((acc, giocatore) => acc + giocatore.bonusTotaleGiocatore, 0);
-
-        return {
-          ...squadra,
-          giocatori,
-          bonusGiocatori
-        };
-      })
-      .reduce((acc, curr) => {
-        return acc.concat(curr.giocatori);
-      }, [])
-      .sort((a, b) => b.bonusTotaleGiocatore - a.bonusTotaleGiocatore);
-
-    /*return data
-      .map(squadra => {
-        // Calcola il bonus totale per ogni giocatore
-        const giocatori = squadra.giocatori.map(giocatore => {
-          const bonusTotaleGiocatore = giocatore.bonus.reduce((sum, bonus) => sum + bonus.bonusGiocatore, 0);
-          return {
-            ...giocatore,
-            bonusTotaleGiocatore
-          };
-        });
-
-        // Calcola il bonus totale per la squadra
-        const bonusGiocatori = giocatori.reduce((acc, giocatore) => acc + giocatore.bonusTotaleGiocatore, 0);
-
-        return {
-          ...squadra,
-          giocatori,
-          bonusGiocatori
-        };
-      })
-      .sort((a, b) => b.bonusTotaleGiocatore - a.bonusTotaleGiocatore);*/
-  }
-
   async getAzioniGiocatoriPerLega(idLega, res) {
     try {
       const objectId = ObjectId.createFromHexString(idLega);
@@ -377,6 +328,33 @@ class AzioneService {
       console.log(err.message)
       res.status(500).send({ message: 'Estrazione fallita', error: err.message });
     }
+  }
+
+  calculateAndSortNome(data) {
+    return data
+      .map(squadra => {
+        // Calcola il bonus totale per ogni giocatore
+        const giocatori = squadra.giocatori.map(giocatore => {
+          const bonusTotaleGiocatore = giocatore.bonus.reduce((sum, bonus) => sum + bonus.bonusGiocatore, 0);
+          return {
+            ...giocatore,
+            bonusTotaleGiocatore
+          };
+        });
+
+        // Calcola il bonus totale per la squadra
+        const bonusGiocatori = giocatori.reduce((acc, giocatore) => acc + giocatore.bonusTotaleGiocatore, 0);
+
+        return {
+          ...squadra,
+          giocatori,
+          bonusGiocatori
+        };
+      })
+      .reduce((acc, curr) => {
+        return acc.concat(curr.giocatori);
+      }, [])
+      .sort((a, b) => b.bonusTotaleGiocatore - a.bonusTotaleGiocatore);
   }
 
   async replaceAzione(azione, res) {
