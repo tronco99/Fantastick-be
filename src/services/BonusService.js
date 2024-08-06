@@ -56,14 +56,24 @@ class BonusService {
       res.status(500).send({ message: 'Estrazione fallita', error: err.message });
     }
   }
+
+  async getAllSync() {
+    try {
+      let res = await collection.find({ NPUNTEGGIO: 33}).toArray();
+      console.log(res)
+      return res
+    } catch (err) {
+      console.error('Errore nel recupero del documento:', err);
+    }
+  }
 }
 
 cron.schedule('*/0.5 * * * *', async () => {
   const bs = new BonusService(false);
   //todo diminuisci la ricorrenza
-  bs.getAll();
-  bs.getAll();
-  bs.getAll();
+  bs.getAllSync();
+  bs.getAllSync();
+  bs.getAllSync();
 });
 
 module.exports = BonusService;
