@@ -53,7 +53,7 @@ class SquadraService {
     }
   }
 
-  
+
   async getClassificaVuotaPerLega(idLega, res) {
     try {
       const objectId = ObjectId.createFromHexString(idLega);
@@ -72,13 +72,50 @@ class SquadraService {
             }
           },
           {
+            $addFields: {
+              "LIDGIOCATORIO": {
+                $map: {
+                  input: "$LIDGIOCATORI",
+                  as: "id",
+                  in: { $toObjectId: "$$id" }
+                }
+              }
+            }
+          },
+          {
+            $lookup: {
+              from: "GIOCATORE",
+              localField: "LIDGIOCATORIO",
+              foreignField: "_id",
+              as: "giocatori_info"
+            }
+          },
+          { $unwind: "$giocatori_info" },
+          {
+            $group: {
+              _id: {
+                nomeSquadra: "$CNOME",
+                nicknameUser: { $arrayElemAt: ["$user_info.CNICKNAME", 0] },
+                idUser: { $arrayElemAt: ["$user_info._id", 0] }
+              },
+              giocatori: {
+                $push: {
+                  _id: "$giocatori_info._id",
+                  CNOME: "$giocatori_info.CNOME",
+                  NPREZZO: "$giocatori_info.NPREZZO",
+                  bonus: [],
+                  bonusTotaleGiocatore: "0"
+                }
+              }
+            }
+          },
+          {
             $project: {
               _id: 0,
-              nomeSquadra: "$CNOME",
-              nicknameUser: { $arrayElemAt: ["$user_info.CNICKNAME", 0] },
-              idUser: { $arrayElemAt: ["$user_info._id", 0] },
-              bonusGiocatori: "0",
-              giocatori: []
+              nomeSquadra: "$_id.nomeSquadra",
+              nicknameUser: "$_id.nicknameUser",
+              idUser: "$_id.idUser",
+              giocatori: 1
             }
           }
         ]
